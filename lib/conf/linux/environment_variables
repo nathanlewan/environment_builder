@@ -1,0 +1,17 @@
+api_SCRIPTROOTDIR=`echo ${BASH_SOURCE[0]} | sed -e 's|/environment_variables||g'`
+export api_SCRIPTROOTDIR=$api_SCRIPTROOTDIR
+
+cd $api_SCRIPTROOTDIR
+cd ..
+cd ..
+cd ..
+
+api_ENVROOTDIR=`pwd`
+export api_ENVROOTDIR=`pwd`
+
+echo "[environment_variables]:                        setting root directory to $api_ENVROOTDIR"
+
+export api_NODEVERSION="node-v16.13.2-linux-x64"
+export api_PYTHONVERSION="cpython-3.10.0-aarch64-unknown-linux-gnu-noopt-20211017T1616"
+export api_PATH="$api_ENVROOTDIR/lib/setup/linux:$api_ENVROOTDIR/lib/bin/linux/node/$api_NODEVERSION/bin:$api_ENVROOTDIR/lib/bin/linux/python/$api_PYTHONVERSION/install/bin"
+export PATH=$api_PATH:$PATH

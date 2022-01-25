@@ -1,0 +1,21 @@
+{
+  "name": "api_template",
+  "version": "1.0.0",
+  "description": "helpful api template",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nathanlewan/api_template.git"
+  },
+  "author": "Nathan Lewan",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/nathanlewan/api_template/issues"
+  },
+  "homepage": "https://github.com/nathanlewan/api_template#readme",
+  "dependencies": {
+  }
+}

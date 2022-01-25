@@ -1,0 +1,29 @@
+###
+### DON'T MODIFY BELOW THIS PART UNTIL YOU GET BAST THE 'DON'T MODIFY ABOVE THIS PART
+###
+
+api_SCRIPTROOTDIR=`echo ${BASH_SOURCE[0]} | sed -e 's|/environment_variables_custom_or_override||g'`
+export api_SCRIPTROOTDIR=$api_SCRIPTROOTDIR
+
+cd $api_SCRIPTROOTDIR
+cd ..
+cd ..
+cd ..
+
+api_ENVROOTDIR=`pwd`
+export api_ENVROOTDIR=`pwd`
+
+echo "[environment_variables_custom_or_override]:     setting root directory to $api_ENVROOTDIR"
+
+. $api_ENVROOTDIR/lib/conf/linux/environment_variables
+
+export api_NODEVERSION="poop"
+
+##
+## DON'T MODIFY ABOVE THIS PART
+##
+
+# list environment variables below here
+# if the variable already exists, it will be overwritten by what's here
+# example
+# export PATH="new/path:$PATH"
