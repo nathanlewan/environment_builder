@@ -27,3 +27,21 @@ fi
 . $api_ENVROOTDIR/lib/conf/linux/environment_variables
 . $api_ENVROOTDIR/lib/conf/linux/environment_variables_custom_or_override
 . $api_ENVROOTDIR/lib/setup/linux/create_shrc.sh
+
+echo "[init_environment]:                             init run from install_python? [$initRunFromPython]"
+
+if [ "$initRunFromPython" == "yes" ]; then
+    echo "[init_environment]:                             don't re-run install_python"
+else
+    . $api_ENVROOTDIR/lib/setup/linux/install_python.sh
+fi
+
+
+
+echo "[init_environment]:                             init run from install_node? [$initRunFromNode]"
+
+if [ "$initRunFromNode" == "yes" ]; then
+    echo "[init_environment]:                             don't re-run install_node"
+else
+    . $api_ENVROOTDIR/lib/setup/linux/install_node.sh
+fi
