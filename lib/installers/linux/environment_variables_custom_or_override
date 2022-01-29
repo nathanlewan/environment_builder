@@ -3,7 +3,6 @@
 ###
 
 api_SCRIPTROOTDIR=`echo ${BASH_SOURCE[0]} | sed -e 's|/environment_variables_custom_or_override||g'`
-export api_SCRIPTROOTDIR=$api_SCRIPTROOTDIR
 
 cd $api_SCRIPTROOTDIR
 cd ..
@@ -11,13 +10,11 @@ cd ..
 cd ..
 
 api_ENVROOTDIR=`pwd`
-export api_ENVROOTDIR=`pwd`
 
-echo "[environment_variables_custom_or_override]:     setting root directory to $api_ENVROOTDIR"
+echo "[environment_variables_custom_or_override]:     setting root directory to [$api_ENVROOTDIR]"
 
 . $api_ENVROOTDIR/lib/conf/linux/environment_variables
 
-export api_NODEVERSION="poop"
 
 ##
 ## DON'T MODIFY ABOVE THIS PART
