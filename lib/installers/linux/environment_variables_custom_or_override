@@ -1,7 +1,3 @@
-###
-### DON'T MODIFY BELOW THIS PART UNTIL YOU GET BAST THE 'DON'T MODIFY ABOVE THIS PART
-###
-
 api_SCRIPTROOTDIR=`echo ${BASH_SOURCE[0]} | sed -e 's|/environment_variables_custom_or_override||g'`
 
 cd $api_SCRIPTROOTDIR
