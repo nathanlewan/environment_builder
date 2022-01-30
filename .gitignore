@@ -3,3 +3,4 @@
 \lib/bin
 lib/conf/linux/environment_variables_custom_or_override
 .sh_api_env
+.envrc.bat
