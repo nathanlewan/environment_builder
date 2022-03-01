@@ -1,4 +1,6 @@
 @echo off
+setlocal EnableExtensions
+
 for %%i in ("%~dp0.") do SET "api_SCRIPTROOTDIR=%%~fi"
 
 echo "[hide_files]:                                   script location: [%api_SCRIPTROOTDIR%]"
@@ -53,5 +55,22 @@ if exist "%api_ENVROOTDIR%\lib\setup\linux" (
     C:\Windows\System32\attrib +h %api_ENVROOTDIR%\lib\setup\linux
 )
 
+if exist "%api_ENVROOTDIR%\.tmp_envrc.bat" (
+    echo "[hide_files]:                                   hiding [%api_ENVROOTDIR%\.tmp_envrc.bat]"
+    C:\Windows\System32\attrib +h %api_ENVROOTDIR%\.tmp_envrc.bat
+)
 
+if exist "%api_ENVROOTDIR%\.tmp_ovr_envrc.bat" (
+    echo "[hide_files]:                                   hiding [%api_ENVROOTDIR%\.tmp_ovr_envrc.bat]"
+    C:\Windows\System32\attrib +h %api_ENVROOTDIR%\.tmp_ovr_envrc.bat
+)
 
+if exist "%api_ENVROOTDIR%\.envrc.bat" (
+    echo "[hide_files]:                                   hiding [%api_ENVROOTDIR%\.envrc.bat]"
+    C:\Windows\System32\attrib +h %api_ENVROOTDIR%\.envrc.bat
+)
+
+if exist "%api_ENVROOTDIR%\lib\setup\windows\src" (
+    echo "[hide_files]:                                   hiding [%api_ENVROOTDIR%\lib\setup\windows\src]"
+    C:\Windows\System32\attrib +h %api_ENVROOTDIR%\lib\setup\windows\src
+)

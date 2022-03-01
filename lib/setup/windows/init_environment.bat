@@ -1,4 +1,6 @@
 @echo off
+setlocal EnableExtensions
+
 for %%i in ("%~dp0.") do SET "api_SCRIPTROOTDIR=%%~fi"
 
 cd %api_SCRIPTROOTDIR%
@@ -8,7 +10,7 @@ cd ..
 
 set "api_ENVROOTDIR=%CD%"
 
-echo "[init_environment]:                             setting root directory to [%api_SCRIPTROOTDIR%]"
+echo "[init_environment]:                             setting root directory to [%api_ENVROOTDIR%]"
 
 
 
@@ -26,4 +28,6 @@ if not exist "%api_ENVROOTDIR%/lib/conf/windows/environment_variables_custom_or_
 
 call %api_ENVROOTDIR%\lib\conf\windows\environment_variables.bat
 call %api_ENVROOTDIR%\lib\conf\windows\environment_variables_custom_or_override.bat
+call %api_ENVROOTDIR%\lib\setup\windows\create_envrc.bat
 call %api_ENVROOTDIR%\lib\setup\windows\hide_files.bat
+call %api_ENVROOTDIR%\lib\setup\windows\install_node.bat
