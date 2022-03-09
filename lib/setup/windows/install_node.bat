@@ -33,6 +33,12 @@ if not exist "%api_0ENVROOTDIR%\lib\bin\windows\node\%api_1NODEVERSION%\" mkdir 
 
 
 IF NOT EXIST "%api_0ENVROOTDIR%\lib\bin\windows\node\%api_1NODEVERSION%\node.exe" (
-    call %api_ENVROOTDIR%\lib\setup\windows\src\environmentVar.exe -extractZip "%api_ENVROOTDIR%\lib\installers\windows\%api_1NODEVERSION%.zip" "%api_ENVROOTDIR%\lib\bin\windows\node\%api_1NODEVERSION%"   
+
+    echo " "
+    echo "***"
+    echo "***"
+    echo " "
+    echo "patience..... uncompressing nodejs... may take a minute"
+    call %api_0ENVROOTDIR%\lib\setup\windows\environmentVar.exe -extractZip "%api_0ENVROOTDIR%\lib\installers\windows\%api_1NODEVERSION%.zip" "%api_0ENVROOTDIR%\lib\bin\windows\node\%api_1NODEVERSION%"   
 )
 
