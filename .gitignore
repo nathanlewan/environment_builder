@@ -5,3 +5,5 @@ lib/conf/linux/environment_variables_custom_or_override
 lib\conf\windows\environment_variables_custom_or_override.bat
 .sh_api_env
 .envrc.bat
+package.json
+package-lock.json
