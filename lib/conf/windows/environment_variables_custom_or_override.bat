@@ -6,10 +6,10 @@ cd ..
 cd ..
 cd ..
 
-set "api_ENVROOTDIR=%CD%"
+set "api_0ENVROOTDIR=%CD%"
 
 
-echo "[environment_variables_custom_or_override]:     setting root directory to [%api_ENVROOTDIR%]"
+echo "[environment_variables_custom_or_override]:     setting root directory to [%api_0ENVROOTDIR%]"
 
 
 
@@ -26,3 +26,4 @@ rem list environment variables below here
 rem if the variable already exists, it will be overwritten by what's here
 rem example
 rem set "MYVARIABLE=example"
+set "api_VERSIONNUMBER=1"

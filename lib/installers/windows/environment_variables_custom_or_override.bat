@@ -6,10 +6,10 @@ cd ..
 cd ..
 cd ..
 
-set "api_ENVROOTDIR=%CD%"
+set "api_0ENVROOTDIR=%CD%"
 
 
-echo "[environment_variables_custom_or_override]:     setting root directory to [%api_ENVROOTDIR%]"
+echo "[environment_variables_custom_or_override]:     setting root directory to [%api_0ENVROOTDIR%]"
 
 
 

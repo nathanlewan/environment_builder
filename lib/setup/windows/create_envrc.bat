@@ -10,38 +10,36 @@ cd ..
 cd ..
 cd ..
 
-set "api_ENVROOTDIR=%CD%"
+set "api_0ENVROOTDIR=%CD%"
 
 
-echo "[create_envrc]:                                 setting root directory to [%api_ENVROOTDIR%]"
-
-
-
+echo "[create_envrc]:                                 setting root directory to [%api_0ENVROOTDIR%]"
 
 
 
 
-if exist "%api_ENVROOTDIR%\.envrc.bat" (
-    echo "[create_envrc]:                                 removing [%api_ENVROOTDIR%\.envrc.bat] so we can regenerate it"
-    del /F /Q /AH "%api_ENVROOTDIR%\.envrc.bat"
 
+
+
+if exist "%api_0ENVROOTDIR%\.envrc.bat" (
+    echo "[create_envrc]:                                 removing [%api_0ENVROOTDIR%\.envrc.bat] so we can regenerate it"
+    del /F /Q /AH "%api_0ENVROOTDIR%\.envrc.bat"
+)
+
+if exist "%api_0ENVROOTDIR%\.tmp_envrc.bat" (
+    echo "[create_envrc]:                                 removing [%api_0ENVROOTDIR%\.tmp_envrc.bat] so we can regenerate it"
+    del /F /Q /AH "%api_0ENVROOTDIR%\.tmp_envrc.bat"
+)
+
+if exist "%api_0ENVROOTDIR%\.tmp_ovr_envrc.bat" (
+    echo "[create_envrc]:                                 removing [%api_0ENVROOTDIR%\.tmp_ovr_envrc.bat] so we can regenerate it"
+    del /F /Q /AH "%api_0ENVROOTDIR%\.tmp_ovr_envrc.bat"
 )
 
 
-if exist "%api_ENVROOTDIR%\.tmp_envrc.bat" (
-    echo "[create_envrc]:                                 removing [%api_ENVROOTDIR%\.tmp_envrc.bat] so we can regenerate it"
-    del /F /Q /AH "%api_ENVROOTDIR%\.tmp_envrc.bat"
-)
+findstr /R /C:"^set .*" %api_0ENVROOTDIR%\lib\setup\windows\init_environment.bat >> %api_0ENVROOTDIR%\.tmp_envrc.bat
+findstr /R /C:"^set .*" %api_0ENVROOTDIR%\lib\conf\windows\environment_variables.bat >> %api_0ENVROOTDIR%\.tmp_envrc.bat
+findstr /R /C:"^set .*" %api_0ENVROOTDIR%\lib\conf\windows\environment_variables_custom_or_override.bat >> %api_0ENVROOTDIR%\.tmp_ovr_envrc.bat
 
-if exist "%api_ENVROOTDIR%\.tmp_ovr_envrc.bat" (
-    echo "[create_envrc]:                                 removing [%api_ENVROOTDIR%\.tmp_ovr_envrc.bat] so we can regenerate it"
-    del /F /Q /AH "%api_ENVROOTDIR%\.tmp_ovr_envrc.bat"
-)
-
-
-findstr /R /C:"^set .*" %api_ENVROOTDIR%\lib\setup\windows\init_environment.bat >> %api_ENVROOTDIR%\.tmp_envrc.bat
-findstr /R /C:"^set .*" %api_ENVROOTDIR%\lib\conf\windows\environment_variables.bat >> %api_ENVROOTDIR%\.tmp_envrc.bat
-findstr /R /C:"^set .*" %api_ENVROOTDIR%\lib\conf\windows\environment_variables_custom_or_override.bat >> %api_ENVROOTDIR%\.tmp_ovr_envrc.bat
-
-call %api_ENVROOTDIR%\lib\setup\windows\environmentVar.exe -compileEnvRc %api_ENVROOTDIR%\.tmp_envrc.bat %api_ENVROOTDIR%\.tmp_ovr_envrc.bat
-call %api_ENVROOTDIR%\lib\setup\windows\environmentVar.exe -importEnvironmentVars
+call %api_0ENVROOTDIR%\lib\setup\windows\environmentVar.exe -compileEnvRc %api_0ENVROOTDIR%\.tmp_envrc.bat %api_0ENVROOTDIR%\.tmp_ovr_envrc.bat
+call %api_0ENVROOTDIR%\lib\setup\windows\environmentVar.exe -importEnvironmentVars

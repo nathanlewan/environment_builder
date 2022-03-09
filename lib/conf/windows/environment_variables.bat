@@ -6,19 +6,19 @@ cd ..
 cd ..
 cd ..
 
-set "api_ENVROOTDIR=%CD%"
+set "api_0ENVROOTDIR=%CD%"
 
 
-echo "[environment_variables]:                        setting root directory to [%api_ENVROOTDIR%]"
-
-
-
+echo "[environment_variables]:                        setting root directory to [%api_0ENVROOTDIR%]"
 
 
 
 
-set "api_ENVROOTDIR=%api_ENVROOTDIR%"
-set "api_NODEVERSION=node-v16.13.2-windows-x64"
-set "api_NODEPATH=%api_ENVROOTDIR%\lib\bin\windows\node\%api_NODEVERSION%"
-set "api_PATH=%api_ENVROOTDIR%\lib\setup\windows;%api_NODEPATH%"
-set "PATH=%api_PATH%;%PATH%"
+
+
+
+set "api_0ENVROOTDIR=%api_0ENVROOTDIR%"
+set "api_1NODEVERSION=node-v16.13.2-windows-x64"
+set "api_2NODEPATH=%api_0ENVROOTDIR%\lib\bin\windows\node\%api_1NODEVERSION%"
+set "api_3PATH=%api_0ENVROOTDIR%\lib\setup\windows;%api_2NODEPATH%"
+set "PATH=%api_3PATH%;%PATH%"
