@@ -1,0 +1,25 @@
+#!/bin/bash
+SCRIPT_ROOT_DIR=`echo ${BASH_SOURCE[0]} | sed -e 's|\(.*\)/|\1___|' | awk -F "___" '{NF--; print}'`
+
+cd $SCRIPT_ROOT_DIR
+cd ..
+cd ..
+
+ENV_ROOT_DIR=`pwd`
+
+
+echo "[environment_variables]:                        setting root directory to [$ENV_ROOT_DIR]"
+
+
+
+
+
+
+
+
+
+
+export NODE_VERSION="node-v16.13.2-linux-x64"
+export api_NODEPATH="$ENV_ROOT_DIR/lib/bin/linux/node/$NODE_VERSION"
+export api_PATH="$ENV_ROOT_DIR/lib/setup/linux:$api_NODEPATH/bin"
+export PATH=$api_PATH:$PATH

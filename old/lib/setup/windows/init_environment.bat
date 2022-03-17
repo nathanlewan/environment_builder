@@ -1,9 +1,9 @@
 @echo off
 setlocal EnableExtensions
 
-for %%i in ("%~dp0.") do SET "api_SCRIPTROOTDIR=%%~fi"
+for %%i in ("%~dp0.") do SET "SCRIPT_ROOT_DIR=%%~fi"
 
-cd %api_SCRIPTROOTDIR%
+cd %SCRIPT_ROOT_DIR%
 cd ..
 cd ..
 cd ..

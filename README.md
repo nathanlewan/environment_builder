@@ -1,19 +1,19 @@
-# api_template
+# environment builder
 
+Meant to create a working environment for your app that supplies all the necessary services
+to run, allowing for portability. The goal is not to have any reliance on the host, other
+than the fact that is is a supported operating system for what you are trying to run.
 
-## initialize the environment
+It is mean to be a submodule of other projects, handling the environment for you, so you don't
+have to worry about it.
 
-### linux
+Supported Host OS's
+    * Linux
+    * Windows
 
-First, run the lib/setup/linux/init_environment.sh script. This will create \
-a .sh_api_env file in the root of your project, and inject it into your ~/.bashrc, \
-~/.bash_profile, and/or ~/.zshrc files to run as a sourced script if it is present.
+Supported Servers/Applications
+    * NodeJs
 
-it will set things like the version of node to use, version of python to use, \
-the path, and any other variables you need set. To add or override the defaults \
-provided, add them as exported variables to:
-
-lib/conf/linux/environment_variables_custom_or_override
-
-If you change environment variables in the files, you must re-run init_environment.sh \
-to update the generated files.
+Supported Environment Variable Configurations
+    * Set environment variables permanently for user account
+    * set environment variables for open console

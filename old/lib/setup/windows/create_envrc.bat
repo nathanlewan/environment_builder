@@ -1,11 +1,11 @@
 @echo off
 setlocal EnableExtensions
 
-for %%i in ("%~dp0.") do SET "api_SCRIPTROOTDIR=%%~fi"
+for %%i in ("%~dp0.") do SET "SCRIPT_ROOT_DIR=%%~fi"
 
-echo "[create_envrc]:                                 script location: [%api_SCRIPTROOTDIR%]"
+echo "[create_envrc]:                                 script location: [%SCRIPT_ROOT_DIR%]"
 
-cd %api_SCRIPTROOTDIR%
+cd %SCRIPT_ROOT_DIR%
 cd ..
 cd ..
 cd ..
