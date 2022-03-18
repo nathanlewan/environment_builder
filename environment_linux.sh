@@ -41,9 +41,6 @@ while :; do
 
         *)
             clear
-            echo "***"
-            echo "NEW CONSOLE SESSION LAUNCHED"
-            echo "***"
             exec "/bin/bash"
             exit
             ;;

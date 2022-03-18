@@ -242,6 +242,7 @@ setupDefaultEnvironmentVariables () {
     done
 
     echo "PATH=$pathVariable" >> $ENVIRONMENT_ROOT_DIR/conf/env_default
+    buildEnvironmentTtyPs1 >> $ENVIRONMENT_ROOT_DIR/conf/env_default
 
 }
 
@@ -270,4 +271,12 @@ applyDefaultEnvironmentVariables () {
         export $varName=$varValue
 
     done
+}
+
+function buildEnvironmentTtyPs1 () {
+
+    projectFolderName=`echo $ENVIRONMENT_ROOT_DIR | awk -F "/" '{print $(NF)}'`
+
+    echo "PS1=[[$projectFolderName]]> "
+
 }
