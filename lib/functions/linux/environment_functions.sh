@@ -286,7 +286,7 @@ applyDefaultEnvironmentVariables () {
 
 buildEnvironmentTtyPs1 () {
 
-    projectFolderName=`echo $ENVIRONMENT_ROOT_DIR | awk -F "/" '{print $(NF)}'`
+    projectFolderName=`echo $ENVIRONMENT_ROOT_DIR | awk -F "/" '{print $(NF-1)}'`
 
     echo "PS1=[[$projectFolderName]]\$"
 
