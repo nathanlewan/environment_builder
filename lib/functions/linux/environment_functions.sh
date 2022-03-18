@@ -210,8 +210,11 @@ shouldBeDeployed () {
 
 setupDefaultEnvironmentVariables () {
 
+    # package module environment variables
     packageModules=`ls $ENVIRONMENT_ROOT_DIR/lib/package_modules/linux/`
     packageVariables=""
+
+    # path is special, because it compounds
     pathVariable=`echo $PATH`
 
     for i in $packageModules
@@ -236,7 +239,8 @@ setupDefaultEnvironmentVariables () {
             then
                 pathVariable="$pathVariable:$newPathEntry"
             fi
-
+        else
+            echo $element >> $ENVIRONMENT_ROOT_DIR/conf/env_default
         fi
 
     done
@@ -248,7 +252,7 @@ setupDefaultEnvironmentVariables () {
 
 applyDefaultEnvironmentVariables () {
 
-    defaultEnvironmentVars=`cat conf/env_default | grep -v "#" | grep -v '^ '`
+    defaultEnvironmentVars=`cat conf/env_default | grep -v "#" | grep -v -e '^ ' | grep -v -e '^$'`
 
     for envVar in $defaultEnvironmentVars
     do
@@ -256,11 +260,17 @@ applyDefaultEnvironmentVariables () {
         varName=`echo $envVar | awk -F "=" '{print $1}'`
         varValue=`echo $envVar | awk -F "=" '{print $2}'`
 
-        export $varName=$varValue
+        if [ "$varName" == "PS1" ]
+        then
+            export $varName="$varValue "
+        else
+            export $varName=$varValue
+        fi
+        
 
     done
 
-    defaultCustomVars=`cat conf/env_custom | grep -v "#" | grep -v '^ '`
+    defaultCustomVars=`cat conf/env_custom | grep -v "#" | grep -v -e '^ ' | grep -v -e '^$'`
 
     for envVar in $defaultCustomVars
     do
@@ -271,12 +281,13 @@ applyDefaultEnvironmentVariables () {
         export $varName=$varValue
 
     done
+
 }
 
-function buildEnvironmentTtyPs1 () {
+buildEnvironmentTtyPs1 () {
 
     projectFolderName=`echo $ENVIRONMENT_ROOT_DIR | awk -F "/" '{print $(NF)}'`
 
-    echo "PS1=[[$projectFolderName]]> "
+    echo "PS1=[[$projectFolderName]]\$"
 
 }

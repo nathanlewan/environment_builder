@@ -41,6 +41,12 @@ while :; do
 
         *)
             clear
+            echo " "
+            echo "**************************************************"
+            echo "** New terminal session with environment set up **"
+            echo "** When done be sure to 'exit' this terminal    **"
+            echo "**************************************************"
+            echo " "
             exec "/bin/bash"
             exit
             ;;

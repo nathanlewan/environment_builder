@@ -110,18 +110,27 @@ ensureSymLinksExist () {
 
     versionName=`getCachedVersion | sed -e 's/.tar.gz//g'`
 
-    if [ ! -L $ENVIRONMENT_ROOT_DIR/bin/node ]
+    if [ -L $ENVIRONMENT_ROOT_DIR/bin/node ]
     then
+        unlink $ENVIRONMENT_ROOT_DIR/bin/node
+        ln -s $ENVIRONMENT_ROOT_DIR/bin/.linux/.node/$versionName/bin/node $ENVIRONMENT_ROOT_DIR/bin/node
+    else
         ln -s $ENVIRONMENT_ROOT_DIR/bin/.linux/.node/$versionName/bin/node $ENVIRONMENT_ROOT_DIR/bin/node
     fi
 
-    if [ ! -L $ENVIRONMENT_ROOT_DIR/bin/npm ]
+    if [ -L $ENVIRONMENT_ROOT_DIR/bin/npm ]
     then
+        unlink $ENVIRONMENT_ROOT_DIR/bin/npm
+        ln -s $ENVIRONMENT_ROOT_DIR/bin/.linux/.node/$versionName/bin/npm $ENVIRONMENT_ROOT_DIR/bin/npm
+    else
         ln -s $ENVIRONMENT_ROOT_DIR/bin/.linux/.node/$versionName/bin/npm $ENVIRONMENT_ROOT_DIR/bin/npm
     fi
 
-    if [ ! -L $ENVIRONMENT_ROOT_DIR/bin/npx ]
+    if [ -L $ENVIRONMENT_ROOT_DIR/bin/npx ]
     then
+        unlink $ENVIRONMENT_ROOT_DIR/bin/npx 
+        ln -s $ENVIRONMENT_ROOT_DIR/bin/.linux/.node/$versionName/bin/npx $ENVIRONMENT_ROOT_DIR/bin/npx
+    else
         ln -s $ENVIRONMENT_ROOT_DIR/bin/.linux/.node/$versionName/bin/npx $ENVIRONMENT_ROOT_DIR/bin/npx
     fi
 }
@@ -141,8 +150,6 @@ then
             echo "PATH=$ENVIRONMENT_ROOT_DIR/bin"
         ;;
         *)
-
-            echo "deploy node"
 
             makeNodeJsFolderStructure
             isNodeDeployed=`isNodeAlreadyDeployed`
