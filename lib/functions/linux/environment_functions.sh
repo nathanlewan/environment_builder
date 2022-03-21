@@ -215,7 +215,7 @@ setupDefaultEnvironmentVariables () {
     packageVariables=""
 
     # path is special, because it compounds
-    pathVariable=`echo $PATH`
+    pathVariable=`echo "$ENVIRONMENT_ROOT_DIR/bin:$PATH"`
 
     for i in $packageModules
     do
@@ -288,6 +288,6 @@ buildEnvironmentTtyPs1 () {
 
     projectFolderName=`echo $ENVIRONMENT_ROOT_DIR | awk -F "/" '{print $(NF-1)}'`
 
-    echo "PS1=[[$projectFolderName]]\$"
+    echo "PS1=[[$projectFolderName]]\\$"
 
 }
