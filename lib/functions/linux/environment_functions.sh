@@ -27,11 +27,8 @@ generateDefaultEnvCustomFile () {
     if [ ! -f "$ENVIRONMENT_ROOT_DIR/conf/env_custom" ]
     then
         touch "$ENVIRONMENT_ROOT_DIR/conf/env_custom"
-        echo "##" >> "$ENVIRONMENT_ROOT_DIR/conf/env_custom"
-        echo "## Add Custom variables here" >> "$ENVIRONMENT_ROOT_DIR/conf/env_custom"
-        echo "## Or, alternately, re-define and override default variables located in the env_default file" >> "$ENVIRONMENT_ROOT_DIR/conf/env_custom"
-        echo "##" >> "$ENVIRONMENT_ROOT_DIR/conf/env_custom"
-        echo " " >> "$ENVIRONMENT_ROOT_DIR/conf/env_custom"
+        echo "# Add Custom variables here" >> "$ENVIRONMENT_ROOT_DIR/conf/env_custom"
+        echo "# Or, alternately, re-define and override default variables located in the env_default file" >> "$ENVIRONMENT_ROOT_DIR/conf/env_custom"
     fi
 
 }
@@ -54,12 +51,9 @@ generateDefaultEnvAppFile () {
     if [ ! -f "$ENVIRONMENT_ROOT_DIR/conf/applications" ]
     then
         touch "$ENVIRONMENT_ROOT_DIR/conf/applications"
-        echo "##" >> "$ENVIRONMENT_ROOT_DIR/conf/applications"
-        echo "## Add required applications here, one per line" >> "$ENVIRONMENT_ROOT_DIR/conf/applications"
-        echo "## Available applications:"  >> "$ENVIRONMENT_ROOT_DIR/conf/applications"
-        echo "##     * nodejs"  >> "$ENVIRONMENT_ROOT_DIR/conf/applications"
-        echo "##" >> "$ENVIRONMENT_ROOT_DIR/conf/applications"
-        echo " " >> "$ENVIRONMENT_ROOT_DIR/conf/applications"
+        echo "# Add required applications here, one per line" >> "$ENVIRONMENT_ROOT_DIR/conf/applications"
+        echo "# Available applications:"  >> "$ENVIRONMENT_ROOT_DIR/conf/applications"
+        echo "#     * nodejs"  >> "$ENVIRONMENT_ROOT_DIR/conf/applications"
     fi
 
 }
@@ -82,11 +76,8 @@ generateDefaultEnvFile () {
     if [ ! -f "$ENVIRONMENT_ROOT_DIR/conf/env_default" ]
     then
         touch "$ENVIRONMENT_ROOT_DIR/conf/env_default"
-        echo "##" >> "$ENVIRONMENT_ROOT_DIR/conf/env_default"
-        echo "## This file is auto-generated" >> "$ENVIRONMENT_ROOT_DIR/conf/env_default"
-        echo "## If you want to add/modify variables (or overwrite ones here), edit the 'env_custom' file"  >> "$ENVIRONMENT_ROOT_DIR/conf/env_default"
-        echo "##" >> "$ENVIRONMENT_ROOT_DIR/conf/env_default"
-        echo " " >> "$ENVIRONMENT_ROOT_DIR/conf/env_default"
+        echo "# This file is auto-generated" >> "$ENVIRONMENT_ROOT_DIR/conf/env_default"
+        echo "# If you want to add/modify variables (or overwrite ones here), edit the 'env_custom' file"  >> "$ENVIRONMENT_ROOT_DIR/conf/env_default"
     fi
 
 }
