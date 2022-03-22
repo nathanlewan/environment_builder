@@ -7,6 +7,13 @@ ENVIRONMENT_ROOT_DIR=`pwd`
 
 
 
+
+
+
+
+
+
+
 generateDefaultConfFolderStructure
 generateDefaultEnvCustomFile
 generateDefaultEnvAppFile
