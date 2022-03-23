@@ -12,7 +12,7 @@ environmentVariableSetup=$1
 
 
 
-makeNodeJsFolderStructure () {
+makePackageFolderStructure () {
 
     if [ ! -d "$ENVIRONMENT_ROOT_DIR/bin/.linux/.node" ]
     then
@@ -21,31 +21,35 @@ makeNodeJsFolderStructure () {
 
 }
 
-getNodeVersionFromWeb () {
+getPackageVersionFromWeb () {
 
     # first argument passed to function
     formatType=$1
 
     # if argument '-reset' is passed, delete env_custom file
-    latestVersion=$(curl --no-progress-meter https://nodejs.org/dist/latest/ | grep linux | grep x64 | grep tar.gz | awk -F "=" '{print $2}' | awk -F "</a>" '{print $1}' | awk -F ">" '{print $2}')
+    latestVersionPackageName=$(curl --no-progress-meter https://nodejs.org/dist/latest/ | grep linux | grep x64 | grep tar.gz | awk -F "=" '{print $2}' | awk -F "</a>" '{print $1}' | awk -F ">" '{print $2}')
 
     case $formatType in
 
         "-downloadUrl")
-            latestVersionUrl="https://nodejs.org/dist/latest/$latestVersion"
+            # example return: "https://nodejs.org/dist/latest/node-v*.*.*-linux-x64.tar.gz"
+            latestVersionUrl="https://nodejs.org/dist/latest/$latestVersionPackageName"
             echo "$latestVersionUrl"
         ;;
-        "-tarballName")
-            echo "$latestVersion"
+        "-packageFileName")
+            # example return: "node-v*.*.*-linux-x64.tar.gz"
+            echo "$latestVersionPackageName"
         ;;
-        "-cacheNameLocally")
-            makeNodeJsFolderStructure
-            echo "$latestVersion" > "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node/.downloaded_version_number
-            echo "$latestVersion"
+        "-cachePackageFileNameLocallyAndReturn")
+            # example return: "node-v*.*.*-linux-x64.tar.gz"
+            makePackageFolderStructure
+            echo "$latestVersionPackageName" > "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node/.downloaded_version_number
+            echo "$latestVersionPackageName"
         ;;
         *)
-            latestVersionName=${latestVersion//.tar.gz/}
-            echo "$latestVersionName"
+            # example return: "node-v*.*.*-linux-x64"
+            latestVersionFolderName=${latestVersionPackageName//.tar.gz/}
+            echo "$latestVersionFolderName"
         ;;
 
     esac
@@ -64,11 +68,10 @@ getCachedVersion () {
 
 }
 
-isNodeAlreadyDeployed () {
+isPackageAlreadyDeployed () {
 
-    makeNodeJsFolderStructure
-    cachedVersionName=$(getCachedVersion)
-    latestVersionNameFromWeb=$(getNodeVersionFromWeb)
+    makePackageFolderStructure
+    cachedVersionName=$(getCachedVersion | sed -e 's/.tar.gz//g')
 
     if [ "$cachedVersionName" == "" ]
     then
@@ -76,7 +79,7 @@ isNodeAlreadyDeployed () {
         return
     fi
 
-    if [ -f "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node/"$latestVersionNameFromWeb"/bin/node ]
+    if [ -f "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node/"$cachedVersionName"/bin/node ]
     then
         echo "yes"
     else
@@ -85,15 +88,15 @@ isNodeAlreadyDeployed () {
 
 }
 
-isNodeAtLatestVersion () {
+isPackageAtLatestVersion () {
 
-    makeNodeJsFolderStructure
+    makePackageFolderStructure
     cachedVersionName=$(getCachedVersion)
-    latestVersionNameFromWeb=$(getNodeVersionFromWeb -tarballName)
+    latestVersionNameFromWeb=$(getPackageVersionFromWeb -packageFileName)
 
     if [ "$cachedVersionName" == "$latestVersionNameFromWeb" ]
     then
-        deployedAlready=$(isNodeAlreadyDeployed)
+        deployedAlready=$(isPackageAlreadyDeployed)
 
         if [ "$deployedAlready" == "yes" ]
         then
@@ -136,13 +139,26 @@ ensureSymLinksExist () {
     fi
 }
 
+installPackage () {
+    echo "** nodejs needs installing **"
+    latestVersionUrlFromWeb=$(getPackageVersionFromWeb -cachePackageFileNameLocallyAndReturn)
+    latestDownloadUrlFromWeb=$(getPackageVersionFromWeb -downloadUrl)
+    curl "$latestDownloadUrlFromWeb" > "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node/"$latestVersionUrlFromWeb"
+
+    if [ -f "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node/"$latestVersionUrlFromWeb" ]
+    then
+        tar xv -C "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node -f "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node/"$latestVersionUrlFromWeb"
+    else
+        echo "error: nodejs tarball not downloaded"
+    fi
+}
 
 
 
 
-deployNode=$(shouldBeDeployed nodejs)
+deployPackage=$(shouldBeDeployed nodejs)
 
-if [ "$deployNode" == "yes" ]
+if [ "$deployPackage" == "yes" ]
 then
 
     case $environmentVariableSetup in
@@ -152,29 +168,39 @@ then
         ;;
         *)
 
-            makeNodeJsFolderStructure
-            isNodeDeployed=$(isNodeAlreadyDeployed)
-            isNodeLatestVersionInstalled=$(isNodeAtLatestVersion)
+            makePackageFolderStructure
+            isPackageDeployed=$(isPackageAlreadyDeployed)
+            isPackageLatestVersionInstalled=$(isPackageAtLatestVersion)
 
-            if [ "$isNodeDeployed" == "no" ] || [ "$isNodeLatestVersionInstalled" == "no" ]
+            if [ "$isPackageDeployed" == "no" ]
             then
-                echo "needs installing"
-                latestVersionUrlFromWeb=$(getNodeVersionFromWeb -cacheNameLocally)
-                latestDownloadUrlFromWeb=$(getNodeVersionFromWeb -downloadUrl)
-                curl "$latestDownloadUrlFromWeb" > "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node/"$latestVersionUrlFromWeb"
+                installPackage
+            fi
 
-                if [ -f "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node/"$latestVersionUrlFromWeb" ]
-                then
-                    tar xv -C "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node -f "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node/"$latestVersionUrlFromWeb"
-                else
-                    echo "error: nodejs tarball not downloaded"
-                fi
+            if [ "$isPackageDeployed" == "yes" ] && [ "$isPackageLatestVersionInstalled" == "no" ]
+            then
+
+                read -r -t 5 -p 'nodejs has a new version. Upgrade? (timeout to no in 5 seconds) [y/n]: ' installDirective
+
+                case $installDirective in
+
+                    "y"|"Y")
+                        installPackage
+                    ;;
+                    "n"|"N")
+                        echo "** skipping node upgrade **"
+                    ;;
+                    *)
+                        echo "** skipping node upgrade **"
+                    ;;
+
+                esac
 
             fi
 
             ensureSymLinksExist
-
-        esac
+        ;;
+    esac
     
 fi
 
