@@ -1,10 +1,10 @@
 #!/bin/bash
-ENVIRONMENT_ROOT_DIR=`echo ${BASH_SOURCE[0]} | sed -e 's|\(.*\)/|\1___|' | awk -F "___" '{NF--; print}'`
-cd $ENVIRONMENT_ROOT_DIR
+ENVIRONMENT_ROOT_DIR=$(echo "${BASH_SOURCE[0]}" | sed -e 's|\(.*\)/|\1___|' | awk -F "___" '{NF--; print}')
+cd "$ENVIRONMENT_ROOT_DIR" || exit
 cd ..
 cd ..
 cd ..
-ENVIRONMENT_ROOT_DIR=`pwd`
+ENVIRONMENT_ROOT_DIR=$(pwd)
 
 
 
@@ -51,9 +51,13 @@ generateDefaultEnvAppFile () {
     if [ ! -f "$ENVIRONMENT_ROOT_DIR/conf/applications" ]
     then
         touch "$ENVIRONMENT_ROOT_DIR/conf/applications"
-        echo "# Add required applications here, one per line" >> "$ENVIRONMENT_ROOT_DIR/conf/applications"
-        echo "# Available applications:"  >> "$ENVIRONMENT_ROOT_DIR/conf/applications"
-        echo "#     * nodejs"  >> "$ENVIRONMENT_ROOT_DIR/conf/applications"
+
+        {
+            echo "# Add required applications here, one per line"
+            echo "# Available applications:" 
+            echo "#     * nodejs"
+        } >> "$ENVIRONMENT_ROOT_DIR/conf/applications"
+ 
     fi
 
 }
@@ -114,7 +118,7 @@ generateDefaultBinFolderStructure () {
     then
         if [ -d "$ENVIRONMENT_ROOT_DIR/bin" ]
         then
-            rm -rf "$ENVIRONMENT_ROOT_DIR/bin"
+            rm -rf "${ENVIRONMENT_ROOT_DIR:?}/bin"
         fi
     fi
 
@@ -140,9 +144,9 @@ deployStandardToolCurl () {
         chmod 755 "$ENVIRONMENT_ROOT_DIR/bin/.linux/curl"
     fi
 
-    if [ ! -L $ENVIRONMENT_ROOT_DIR/bin/curl ]
+    if [ ! -L "$ENVIRONMENT_ROOT_DIR"/bin/curl ]
     then
-        ln -s $ENVIRONMENT_ROOT_DIR/bin/.linux/curl $ENVIRONMENT_ROOT_DIR/bin/curl
+        ln -s "$ENVIRONMENT_ROOT_DIR"/bin/.linux/curl "$ENVIRONMENT_ROOT_DIR"/bin/curl
     fi
 
 }
@@ -155,9 +159,9 @@ deployStandardToolUnzip () {
         chmod 755 "$ENVIRONMENT_ROOT_DIR/bin/.linux/unzip"
     fi
 
-     if [ ! -L $ENVIRONMENT_ROOT_DIR/bin/unzip ]
+     if [ ! -L "$ENVIRONMENT_ROOT_DIR"/bin/unzip ]
     then
-        ln -s $ENVIRONMENT_ROOT_DIR/bin/.linux/unzip $ENVIRONMENT_ROOT_DIR/bin/unzip
+        ln -s "$ENVIRONMENT_ROOT_DIR"/bin/.linux/unzip "$ENVIRONMENT_ROOT_DIR"/bin/unzip
     fi
 
 }
@@ -187,8 +191,9 @@ shouldBeDeployed () {
 
     generateDefaultEnvAppFile
 
-    allWantedApps=`cat "$ENVIRONMENT_ROOT_DIR/conf/applications" | grep -v '#' | sed -e 's/ //g'`
-    ourAppPresent=`echo $allWantedApps | grep -c -m 1 "$selectedApp"`
+    allAppsContents=$(cat "$ENVIRONMENT_ROOT_DIR/conf/applications")
+    allWantedApps=$(echo "$allAppsContents" | grep -v '#' | sed -e 's/ //g')
+    ourAppPresent=$(echo "$allWantedApps" | grep -c -m 1 "$selectedApp")
 
     if [ "$ourAppPresent" == "1" ]
     then
@@ -202,16 +207,16 @@ shouldBeDeployed () {
 setupDefaultEnvironmentVariables () {
 
     # package module environment variables
-    packageModules=`ls $ENVIRONMENT_ROOT_DIR/lib/package_modules/linux/`
+    packageModules=$(ls "$ENVIRONMENT_ROOT_DIR"/lib/package_modules/linux/)
     packageVariables=""
 
     # path is special, because it compounds
-    pathVariable=`echo "$ENVIRONMENT_ROOT_DIR/bin:$PATH"`
+    pathVariable="$ENVIRONMENT_ROOT_DIR/bin:$PATH"
 
     for i in $packageModules
     do
 
-        packageVar=`$ENVIRONMENT_ROOT_DIR/lib/package_modules/linux/$i -environmentSetup`
+        packageVar=$("$ENVIRONMENT_ROOT_DIR"/lib/package_modules/linux/"$i" -environmentSetup)
         packageVariables="$packageVariables :: $packageVar"
 
     done
@@ -224,52 +229,54 @@ setupDefaultEnvironmentVariables () {
         if [[ "$element" == *"PATH"* ]]
         then
 
-            newPathEntry=`echo "$element" | sed -e 's/PATH=//g'`
+            newPathEntry=${element//PATH=/}
 
             if [[ "$pathVariable" != *"$newPathEntry"* ]]
             then
                 pathVariable="$pathVariable:$newPathEntry"
             fi
         else
-            echo $element >> $ENVIRONMENT_ROOT_DIR/conf/env_default
+            echo "$element" >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
         fi
 
     done
 
-    echo "PATH=$pathVariable" >> $ENVIRONMENT_ROOT_DIR/conf/env_default
-    buildEnvironmentTtyPs1 >> $ENVIRONMENT_ROOT_DIR/conf/env_default
+    echo "PATH=$pathVariable" >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
+    buildEnvironmentTtyPs1 >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
 
 }
 
 applyDefaultEnvironmentVariables () {
 
-    defaultEnvironmentVars=`cat conf/env_default | grep -v "#" | grep -v -e '^ ' | grep -v -e '^$'`
+    envDefaultContents=$(cat conf/env_default)
+    defaultEnvironmentVars=$(echo "$envDefaultContents" | grep -v "#" | grep -v -e '^ ' | grep -v -e '^$')
 
     for envVar in $defaultEnvironmentVars
     do
 
-        varName=`echo $envVar | awk -F "=" '{print $1}'`
-        varValue=`echo $envVar | awk -F "=" '{print $2}'`
+        varName=$(echo "$envVar" | awk -F "=" '{print $1}')
+        varValue=$(echo "$envVar" | awk -F "=" '{print $2}')
 
         if [ "$varName" == "PS1" ]
         then
-            export $varName="$varValue "
+            export "$varName"="$varValue "
         else
-            export $varName=$varValue
+            export "$varName"="$varValue"
         fi
         
 
     done
 
-    defaultCustomVars=`cat conf/env_custom | grep -v "#" | grep -v -e '^ ' | grep -v -e '^$'`
+    envCustomContents=$(cat conf/env_custom )
+    defaultCustomVars=$(echo "$envCustomContents" | grep -v "#" | grep -v -e '^ ' | grep -v -e '^$')
 
     for envVar in $defaultCustomVars
     do
     
-        varName=`echo $envVar | awk -F "=" '{print $1}'`
-        varValue=`echo $envVar | awk -F "=" '{print $2}'`
+        varName=$(echo "$envVar" | awk -F "=" '{print $1}')
+        varValue=$(echo "$envVar" | awk -F "=" '{print $2}')
 
-        export $varName=$varValue
+        export "$varName"="$varValue"
 
     done
 
@@ -277,7 +284,7 @@ applyDefaultEnvironmentVariables () {
 
 buildEnvironmentTtyPs1 () {
 
-    projectFolderName=`echo $ENVIRONMENT_ROOT_DIR | awk -F "/" '{print $(NF-1)}'`
+    projectFolderName=$(echo "$ENVIRONMENT_ROOT_DIR" | awk -F "/" '{print $(NF-1)}')
 
     echo "PS1=[[$projectFolderName]]\\$"
 

@@ -1,8 +1,8 @@
 #!/bin/bash
-ENVIRONMENT_ROOT_DIR=`echo ${BASH_SOURCE[0]} | sed -e 's|\(.*\)/|\1___|' | awk -F "___" '{NF--; print}'`
-cd $ENVIRONMENT_ROOT_DIR
-ENVIRONMENT_ROOT_DIR=`pwd`
-. $ENVIRONMENT_ROOT_DIR/lib/functions/linux/environment_functions.sh
+ENVIRONMENT_ROOT_DIR=$(echo "${BASH_SOURCE[0]}" | sed -e 's|\(.*\)/|\1___|' | awk -F "___" '{NF--; print}')
+cd "$ENVIRONMENT_ROOT_DIR" || exit
+ENVIRONMENT_ROOT_DIR=$(pwd)
+source "$ENVIRONMENT_ROOT_DIR"/lib/functions/linux/environment_functions.sh
 
 
 
@@ -26,12 +26,12 @@ deployStandardToolCurl
 
 
 
-packageModules=`ls $ENVIRONMENT_ROOT_DIR/lib/package_modules/linux/`
+packageModules=$(ls "$ENVIRONMENT_ROOT_DIR"/lib/package_modules/linux/)
 
 for i in $packageModules
 do
-    chmod 755 $ENVIRONMENT_ROOT_DIR/lib/package_modules/linux/$i
-    $ENVIRONMENT_ROOT_DIR/lib/package_modules/linux/$i
+    chmod 755 "$ENVIRONMENT_ROOT_DIR"/lib/package_modules/linux/"$i"
+    "$ENVIRONMENT_ROOT_DIR"/lib/package_modules/linux/"$i"
 done
 
 setupDefaultEnvironmentVariables
