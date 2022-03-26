@@ -13,7 +13,3 @@ Supported Host OS's
 
 Supported Servers/Applications
     * NodeJs
-
-Supported Environment Variable Configurations
-    * Set environment variables permanently for user account
-    * set environment variables for open console
