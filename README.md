@@ -8,8 +8,8 @@ It is mean to be a submodule of other projects, handling the environment for you
 have to worry about it.
 
 Supported Host OS's
-    * Linux
-    * Windows
+* Linux
+* Windows
 
 Supported Servers/Applications
-    * NodeJs
+* NodeJs
