@@ -9,6 +9,14 @@ $ENVIRONMENT_ROOT_DIR = get-location
 
 
 
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+function Unzip
+{
+    param([string]$zipfile, [string]$outpath)
+
+    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
+}
+
 function generateDefaultEnvCustomFile {
 
     param (
@@ -131,14 +139,6 @@ function generateDefaultBinFolderStructure {
 
 }
 
-function deployStandardToolCurl {
-    write-host "new"
-}
-
-function deployStandardToolUnzip {
-    write-host "new"
-}
-
 function resetEnvSetup {
     
     generateDefaultBinFolderStructure -deleteFlag "reset"
@@ -146,8 +146,6 @@ function resetEnvSetup {
     generateDefaultEnvCustomFile -deleteFlag "reset"
     generateDefaultEnvAppFile -deleteFlag "reset"
     generateDefaultEnvFile -deleteFlag "reset"
-    deployStandardToolCurl
-    deployStandardToolUnzip
 
 }
 
@@ -184,13 +182,57 @@ function shouldBeDeployed {
 }
 
 function setupDefaultEnvironmentVariables {
-    write-host "hi"
+    $packageModules = Get-ChildItem -Recurse -Path "$($ENVIRONMENT_ROOT_DIR)\lib\package_modules\windows"
+    $packageVariables = ""
+
+    $pathVariable = "$($ENVIRONMENT_ROOT_DIR)\bin\;$($Env:Path)"
+
+    foreach ($module in $packageModules) {
+        $packageVar = . "$($ENVIRONMENT_ROOT_DIR)\lib\package_modules\windows\$($module)" -environmentVariableSetup environmentSetup
+        if ($packageVariables -eq "") {
+            $packageVariables="$($packageVar)"
+        } else {
+            $packageVariables="$($packageVariables) :: $($packageVar)"
+        }
+        
+    }
+
+    $variableArray = $packageVariables -split " :: "
+
+    foreach ($element in $variableArray) {
+
+        if ($element -like "*PATH=*") {
+            
+            $newPathEntry=$($element).replace("PATH=","")
+
+            if ( !($pathVariable -like "*$($newPathEntry)*") ) {
+                $pathVariable="$($pathVariable);$($newPathEntry)"
+            }
+
+        } else {
+            $element | out-file "$($ENVIRONMENT_ROOT_DIR)\conf\env_default" -Append -Encoding utf8
+        }
+    }
+
+    "PATH=$($pathVariable)" | out-file "$($ENVIRONMENT_ROOT_DIR)\conf\env_default" -Append -Encoding utf8
 }
 
 function applyDefaultEnvironmentVariables {
-    write-host "hi"
-}
+ 
+    $envDefaultContents = Get-Content "$($ENVIRONMENT_ROOT_DIR)\conf\env_default"
+    $defaultEnvironmentVars = @()
+    foreach ($line in $envDefaultContents) {
+        if ( !($line -like "") -and !($line -like "#*") -and !($line -eq " ") ) {
+            $defaultEnvironmentVars += $line
+        }
+    }
 
-function buildEnvironmentTtyPs1 {
-    write-host "hi"
+    foreach ($envVar in $defaultEnvironmentVars) {
+        $varName = $($envVar -split "=")[0]
+        $varValue = $($envVar -split "=")[1]
+
+        [Environment]::SetEnvironmentVariable($varName, $varValue, [EnvironmentVariableTarget]::Process)
+
+    }
+
 }

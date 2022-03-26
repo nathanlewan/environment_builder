@@ -26,16 +26,22 @@ generateDefaultBinFolderStructure
 $packageModules = get-childitem "$($ENVIRONMENT_ROOT_DIR)\lib\package_modules\windows\"
 
 foreach ($script in $packageModules) {
-    write-host $script.name
     . "$($ENVIRONMENT_ROOT_DIR)\lib\package_modules\windows\$($script.name)"
 }
 
-
+setupDefaultEnvironmentVariables
+applyDefaultEnvironmentVariables
 
 if ($resetEnvironment) {
     resetEnvSetup
     exit
-} else {
-    write-host "hello"
 }
+
+Clear-Host
+write-host " "
+write-host "**************************************************"
+write-host "** New terminal session with environment set up **"
+write-host "** When done be sure to 'exit' this terminal    **"
+write-host "**************************************************"
+write-host " "
 

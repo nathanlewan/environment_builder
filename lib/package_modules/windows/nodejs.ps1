@@ -13,7 +13,7 @@ $ENVIRONMENT_ROOT_DIR = get-location
 
 
 
-function makeNodeJsFolderStructure {
+function makePackageFolderStructure {
 
     if ( !(test-path -path "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node") ) {
         New-Item -Path "$($ENVIRONMENT_ROOT_DIR)\bin\.windows" -name ".node" -ItemType "directory"
@@ -21,7 +21,7 @@ function makeNodeJsFolderStructure {
 
 }
 
-function getNodeVersionFromWeb {
+function getPackageVersionFromWeb {
 
     param (
         $formatType
@@ -39,7 +39,7 @@ function getNodeVersionFromWeb {
             return $latestVersion
         }
         "cacheNameLocally" {
-            makeNodeJsFolderStructure
+            makePackageFolderStructure
             $latestVersion | Out-File "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\.downloaded_version_number" -Encoding utf8
             return $latestVersion
         }
@@ -57,31 +57,30 @@ function getCachedVersion {
     }
 }
 
-function isNodeAlreadyDeployed {
+function isPackageAlreadyDeployed {
 
-    makeNodeJsFolderStructure
-    $cachedVersionName = getCachedVersion
-    $latestVersionNameFromWeb = getNodeVersionFromWeb
+    makePackageFolderStructure
+    $cachedVersionName = $(getCachedVersion).replace(".zip","")
 
     if ($cachedVersionName -eq "" ) {
         return "no"
     }
 
-    if (test-path -Path "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\$($latestVersionNameFromWeb)\node.exe") {
+    if (test-path -Path "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\$($cachedVersionName)\node.exe") {
         return "yes"
     } else {
         return "no"
     }
 }
 
-function isNodeAtLatestVersion {
+function isPackageAtLatestVersion {
 
-    makeNodeJsFolderStructure
+    makePackageFolderStructure
     $cachedVersionName = getCachedVersion
-    $latestVersionNameFromWeb = getNodeVersionFromWeb -formatType "zipFileName"
+    $latestVersionNameFromWeb = getPackageVersionFromWeb -formatType "zipFileName"
 
     if ($cachedVersionName -eq $latestVersionNameFromWeb) {
-        $deployedAlready = isNodeAlreadyDeployed
+        $deployedAlready = isPackageAlreadyDeployed
 
         if  ($deployedAlready -eq "yes" ) {
             return "yes"
@@ -96,11 +95,44 @@ function isNodeAtLatestVersion {
 
 function ensureSymLinksExist {
 
-    $WshShell = New-Object -comObject WScript.Shell
-    $Shortcut = $WshShell.CreateShortcut("$($ENVIRONMENT_ROOT_DIR)\bin\node.lnk")
-    $Shortcut.TargetPath = "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\node-v17.7.2-win-x64\node.exe"
-    $Shortcut.Save()
+    $versionName=$(getCachedVersion).replace(".zip","")
 
+    if ( test-path -Path "$($ENVIRONMENT_ROOT_DIR)\bin\node.exe") {
+        Remove-Item "$($ENVIRONMENT_ROOT_DIR)\bin\node.exe" -Confirm:$false -Force
+    }
+
+    New-Item -ItemType HardLink -Path "$($ENVIRONMENT_ROOT_DIR)\bin\node.exe"  -Target "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\$($versionName)\node.exe"
+
+
+    if ( test-path -Path "$($ENVIRONMENT_ROOT_DIR)\bin\npm.cmd") {
+        Remove-Item "$($ENVIRONMENT_ROOT_DIR)\bin\npm.cmd" -Confirm:$false -Force
+    }
+
+    $npmContents = Get-Content "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\$($versionName)\npm.cmd"
+    $npmContents = $npmContents -replace "%~dp0","$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\$($versionName)"
+    $npmContents | Out-File "$($ENVIRONMENT_ROOT_DIR)\bin\npm.cmd" -Encoding ascii
+
+
+    if ( test-path -Path "$($ENVIRONMENT_ROOT_DIR)\bin\npx.cmd") {
+        Remove-Item "$($ENVIRONMENT_ROOT_DIR)\bin\npx.cmd" -Confirm:$false -Force
+    }
+
+    $npxContents = Get-Content "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\$($versionName)\npx.cmd"
+    $npxContents = $npmContents -replace "%~dp0","$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\$($versionName)"
+    $npxContents | Out-File "$($ENVIRONMENT_ROOT_DIR)\bin\npx.cmd" -Encoding ascii
+}
+
+function installPackage {
+    write-host "** nodejs needs installing **"
+
+    $latestVersionUrlFromWeb = getPackageVersionFromWeb -formatType "cacheNameLocally"
+    $latestDownloadUrlFromWeb = getPackageVersionFromWeb -formatType "downloadUrl"
+
+    Invoke-WebRequest -Uri $latestDownloadUrlFromWeb -Method "get" -OutFile "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\$($latestVersionUrlFromWeb)"
+
+    if (test-path "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\$($latestVersionUrlFromWeb)" ) {
+        unzip "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\$($latestVersionUrlFromWeb)" "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\"
+    }
 }
 
 $deployNode = shouldBeDeployed -selectedApp "nodejs"
@@ -108,25 +140,25 @@ $deployNode = shouldBeDeployed -selectedApp "nodejs"
 if ($deployNode -eq "yes") {
 
     if ( $environmentVariableSetup -eq "environmentSetup") {
-        return "PATH=$($ENVIRONMENT_ROOT_DIR)\bin"
+        return "PATH=$($ENVIRONMENT_ROOT_DIR)\bin\"
     }
 
-    makeNodeJsFolderStructure
-    $isNodeDeployed = isNodeAlreadyDeployed
-    $isNodeLatestVersioninstalled = isNodeAtLatestVersion
+    makePackageFolderStructure
+    $isPackageDeployed = isPackageAlreadyDeployed
+    $isPackageLatestVersioninstalled = isPackageAtLatestVersion
 
-    if ( ($isNodeDeployed -eq "no") -or ($isNodeLatestVersioninstalled -eq "no") ) {
+    if ($isPackageDeployed -eq "no") {
+        installPackage
+    }
 
-        write-host "needs installing"
+    if ( ($isPackageDeployed -eq "yes") -and ($isPackageLatestVersioninstalled -eq "no") ) {
 
-        $latestVersionUrlFromWeb = getNodeVersionFromWeb -formatType "cacheNameLocally"
-        $latestDownloadUrlFromWeb = getNodeVersionFromWeb -formatType "downloadUrl"
-
-        Invoke-WebRequest -Uri $latestDownloadUrlFromWeb -Method "get" -OutFile "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\$($latestVersionUrlFromWeb)"
-
-        if (test-path "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\$($latestVersionUrlFromWeb)" ) {
-            Expand-Archive -path "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\$($latestVersionUrlFromWeb)" -DestinationPath "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\" -confirm:$false -Force
+        $installDirective = read-Host "nodejs has a new version. Upgrade? [y/n]"
+        switch ($installDirective) {
+            "y"{installPackage}
+            default {write-host "** skipping node upgrade **"}
         }
+
     }
 
     ensureSymLinksExist
