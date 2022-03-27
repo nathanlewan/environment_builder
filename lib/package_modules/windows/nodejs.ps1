@@ -60,7 +60,7 @@ function getCachedVersion {
 function isPackageAlreadyDeployed {
 
     makePackageFolderStructure
-    $cachedVersionName = $(getCachedVersion).replace(".zip","")
+    try { $cachedVersionName = $(getCachedVersion).replace(".zip","") } catch { $cachedVersionName = ""}
 
     if ($cachedVersionName -eq "" ) {
         return "no"
