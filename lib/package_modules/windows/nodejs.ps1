@@ -54,13 +54,15 @@ function getCachedVersion {
 
     if (test-path -Path "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\.downloaded_version_number") {
         return $(Get-Content -Path "$($ENVIRONMENT_ROOT_DIR)\bin\.windows\.node\.downloaded_version_number" )
+    } else {
+        return ""
     }
 }
 
 function isPackageAlreadyDeployed {
 
     makePackageFolderStructure
-    try { $cachedVersionName = $(getCachedVersion).replace(".zip","") } catch { $cachedVersionName = ""}
+    $cachedVersionName = $(getCachedVersion).replace(".zip","")
 
     if ($cachedVersionName -eq "" ) {
         return "no"
