@@ -27,7 +27,7 @@ getPackageVersionFromWeb () {
     formatType=$1
 
     # if argument '-reset' is passed, delete env_custom file
-    latestVersionPackageName=$(curl --no-progress-meter https://nodejs.org/dist/latest/ | grep linux | grep x64 | grep tar.gz | awk -F "=" '{print $2}' | awk -F "</a>" '{print $1}' | awk -F ">" '{print $2}')
+    latestVersionPackageName=$($ENVIRONMENT_ROOT_DIR/bin/curl --no-progress-meter https://nodejs.org/dist/latest/ | grep linux | grep x64 | grep tar.gz | awk -F "=" '{print $2}' | awk -F "</a>" '{print $1}' | awk -F ">" '{print $2}')
 
     case $formatType in
 
@@ -143,7 +143,7 @@ installPackage () {
     echo "** nodejs needs installing **"
     latestVersionUrlFromWeb=$(getPackageVersionFromWeb -cachePackageFileNameLocallyAndReturn)
     latestDownloadUrlFromWeb=$(getPackageVersionFromWeb -downloadUrl)
-    curl "$latestDownloadUrlFromWeb" > "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node/"$latestVersionUrlFromWeb"
+    $ENVIRONMENT_ROOT_DIR/bin/curl "$latestDownloadUrlFromWeb" > "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node/"$latestVersionUrlFromWeb"
 
     if [ -f "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node/"$latestVersionUrlFromWeb" ]
     then
