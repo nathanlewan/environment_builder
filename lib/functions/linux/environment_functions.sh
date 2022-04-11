@@ -82,6 +82,7 @@ generateDefaultEnvFile () {
         touch "$ENVIRONMENT_ROOT_DIR/conf/env_default"
         echo "# This file is auto-generated" >> "$ENVIRONMENT_ROOT_DIR/conf/env_default"
         echo "# If you want to add/modify variables (or overwrite ones here), edit the 'env_custom' file"  >> "$ENVIRONMENT_ROOT_DIR/conf/env_default"
+        echo " " >> "$ENVIRONMENT_ROOT_DIR/conf/env_default"
     fi
 
 }
@@ -147,6 +148,20 @@ deployStandardToolCurl () {
     if [ ! -L "$ENVIRONMENT_ROOT_DIR"/bin/curl ]
     then
         ln -s "$ENVIRONMENT_ROOT_DIR"/bin/.linux/curl "$ENVIRONMENT_ROOT_DIR"/bin/curl
+    fi
+
+    # set curl ca cert path
+
+    certPath="/etc/ssl/certs/ca-certificates.crt"
+    if [ ! -f "$certPath" ]
+    then
+        certPath="/etc/pki/tls/certs/ca-bundle.crt"
+    fi 
+
+    testPresence=`cat "$ENVIRONMENT_ROOT_DIR"/conf/env_default | grep -c -m 1 CURL_CA_BUNDLE`
+    if [ "$testPresence" == "0" ]
+    then
+        echo "CURL_CA_BUNDLE=$certPath" >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
     fi
 
 }
@@ -236,12 +251,21 @@ setupDefaultEnvironmentVariables () {
                 pathVariable="$pathVariable:$newPathEntry"
             fi
         else
-            echo "$element" >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
+            testPresence=`cat "$ENVIRONMENT_ROOT_DIR"/conf/env_default | grep -c -m 1 "$element"`
+            if [ "$testPresence" == "0" ]
+            then
+                echo "$element" >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
+            fi
         fi
 
     done
 
-    echo "PATH=$pathVariable" >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
+    testPresence=`cat "$ENVIRONMENT_ROOT_DIR"/conf/env_default | grep -c -m 1 "PATH="`
+    if [ "$testPresence" == "0" ]
+    then
+        echo "PATH=$pathVariable" >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
+    fi
+
     buildEnvironmentTtyPs1 >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
 
 }
@@ -286,6 +310,11 @@ buildEnvironmentTtyPs1 () {
 
     projectFolderName=$(echo "$ENVIRONMENT_ROOT_DIR" | awk -F "/" '{print $(NF-1)}')
 
-    echo "PS1=[[$projectFolderName]]\\$"
+    testPresence=`cat "$ENVIRONMENT_ROOT_DIR"/conf/env_default | grep -c -m 1 "PS1="`
+
+    if [ "$testPresence" == "0" ]
+    then
+        echo "PS1=[[$projectFolderName]]\\$"
+    fi
 
 }

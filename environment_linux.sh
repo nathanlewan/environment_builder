@@ -24,7 +24,8 @@ generateDefaultBinFolderStructure
 deployStandardToolUnzip
 deployStandardToolCurl
 
-
+setupDefaultEnvironmentVariables
+applyDefaultEnvironmentVariables
 
 packageModules=$(ls "$ENVIRONMENT_ROOT_DIR"/lib/package_modules/linux/)
 
