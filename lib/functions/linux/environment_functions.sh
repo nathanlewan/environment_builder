@@ -266,7 +266,12 @@ setupDefaultEnvironmentVariables () {
         echo "PATH=$pathVariable" >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
     fi
 
-    buildEnvironmentTtyPs1 >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
+    testPsEntryCheck=`cat "$ENVIRONMENT_ROOT_DIR"/conf/env_default | grep -c -m 1 "PS1="`
+    if [ "$testPsEntryCheck" == 0 ]
+    then
+        buildEnvironmentTtyPs1 >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
+    fi
+    
 
 }
 
@@ -307,14 +312,5 @@ applyDefaultEnvironmentVariables () {
 }
 
 buildEnvironmentTtyPs1 () {
-
-    projectFolderName=$(echo "$ENVIRONMENT_ROOT_DIR" | awk -F "/" '{print $(NF-1)}')
-
-    testPresence=`cat "$ENVIRONMENT_ROOT_DIR"/conf/env_default | grep -c -m 1 "PS1="`
-
-    if [ "$testPresence" == "0" ]
-    then
-        echo "PS1=[[$projectFolderName]]\\$"
-    fi
-
+    echo "PS1=[[environment_workspace]]\\$"
 }
