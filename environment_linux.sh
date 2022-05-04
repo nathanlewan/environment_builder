@@ -49,7 +49,16 @@ while :; do
         "-initializeServer")
             eval " $2"
             exit
-        ;;
+            ;;
+        "-help")
+            echo "ENVIRONMENT LINUX SETUP"
+            echo "  FLAGS:"
+            echo "    <none>:             launch console with environment loaded"
+            echo "    -resetEnvironment:  reset everything back to default"
+            echo "    -initializeServer:  loads environment, then runs the given cmd"
+            echo "    -help:              this help menu"
+            exit
+            ;;
         *)
             INCLUDE_WARNING_ABOUT_SPACES="no"
             case $NUMBER_OF_FOLDERS_TO_TRAVERSE in
