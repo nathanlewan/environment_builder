@@ -47,16 +47,30 @@ while :; do
             exit
             ;;
         "-initializeServer")
+            case $3 in
+
+                    1) cd ../ ;;
+                    2) cd ../../ ;;
+                    3) cd ../../../ ;;
+                    4) cd ../../../../ ;;
+                    5) cd ../../../../../ ;;
+                    *)
+                        INCLUDE_WARNING_ABOUT_SPACES="yes"
+                    ;;
+
+            esac
             eval " $2"
             exit
             ;;
         "-help")
             echo "ENVIRONMENT LINUX SETUP"
             echo "  FLAGS:"
-            echo "    <none>:             launch console with environment loaded"
-            echo "    -resetEnvironment:  reset everything back to default"
-            echo "    -initializeServer:  loads environment, then runs the given cmd"
-            echo "    -help:              this help menu"
+            echo "    <none>:                           launch console with environment loaded"
+            echo "    <1-5>:                            launch console with # of folders back"
+            echo "    -resetEnvironment:                reset everything back to default"
+            echo "    -initializeServer '<cmd>':        loads environment, then runs the given <cmd>"
+            echo "    -initializeServer '<cmd>' <1-5>:  loads environment from # of folders back, then runs the given <cmd>"
+            echo "    -help:                            this help menu"
             exit
             ;;
         *)
