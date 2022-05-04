@@ -27,13 +27,13 @@ getPackageVersionFromWeb () {
     formatType=$1
 
     # if argument '-reset' is passed, delete env_custom file
-    latestVersionPackageName=$("$ENVIRONMENT_ROOT_DIR"/bin/curl --no-progress-meter https://nodejs.org/dist/latest/ | grep linux | grep x64 | grep tar.gz | awk -F "=" '{print $2}' | awk -F "</a>" '{print $1}' | awk -F ">" '{print $2}')
+    latestVersionPackageName=$("$ENVIRONMENT_ROOT_DIR"/bin/curl --no-progress-meter https://nodejs.org/dist/latest-gallium/ | grep linux | grep x64 | grep tar.gz | awk -F "=" '{print $2}' | awk -F "</a>" '{print $1}' | awk -F ">" '{print $2}')
 
     case $formatType in
 
         "-downloadUrl")
             # example return: "https://nodejs.org/dist/latest/node-v*.*.*-linux-x64.tar.gz"
-            latestVersionUrl="https://nodejs.org/dist/latest/$latestVersionPackageName"
+            latestVersionUrl="https://nodejs.org/dist/latest-gallium/$latestVersionPackageName"
             echo "$latestVersionUrl"
         ;;
         "-packageFileName")
