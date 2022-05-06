@@ -23,6 +23,7 @@ generateDefaultEnvFile
 generateDefaultBinFolderStructure
 deployStandardToolUnzip
 deployStandardToolCurl
+deployStandardToolTar
 
 setupDefaultEnvironmentVariables
 applyDefaultEnvironmentVariables
@@ -87,7 +88,7 @@ while :; do
                 ;;
 
             esac
-            clear
+            #clear
             echo " "
             echo "**********************************************************"
             echo "** New terminal session with environment set up         **"

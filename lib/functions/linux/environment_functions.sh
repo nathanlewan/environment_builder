@@ -181,6 +181,21 @@ deployStandardToolUnzip () {
 
 }
 
+deployStandardToolTar () {
+
+    if [ ! -d "$ENVIRONMENT_ROOT_DIR/bin/.linux/.tar" ]
+    then
+        "$ENVIRONMENT_ROOT_DIR/bin/unzip $ENVIRONMENT_ROOT_DIR/lib/binary_installers/linux/tar/tar.zip" -d $ENVIRONMENT_ROOT_DIR/bin/.linux/.tar
+        chmod 755 -R "$ENVIRONMENT_ROOT_DIR/bin/.linux/.tar"
+    fi
+
+     if [ ! -L "$ENVIRONMENT_ROOT_DIR"/bin/tar ]
+    then
+        ln -s "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.tar/tar/bin/tar "$ENVIRONMENT_ROOT_DIR"/bin/tar
+    fi
+
+}
+
 resetEnvSetup () {
 
     generateDefaultBinFolderStructure -reset
