@@ -188,7 +188,7 @@ function setupDefaultEnvironmentVariables {
     $pathVariable = "$($ENVIRONMENT_ROOT_DIR)\bin\;$($Env:Path)"
 
     foreach ($module in $packageModules) {
-        $packageVar = . "$($ENVIRONMENT_ROOT_DIR)\lib\package_modules\windows\$($module)" -environmentVariableSetup environmentSetup
+        $packageVar = . $($module) -environmentVariableSetup environmentSetup
         if ($packageVariables -eq "") {
             $packageVariables="$($packageVar)"
         } else {
