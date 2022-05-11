@@ -25,7 +25,7 @@ if NOT EXIST "%SCRIPT_ROOT_DIR%\bin\7z.LNK" (
 
 
 rem move curl into position
-if NOT EXIST "%SCRIPT_ROOT_DIR%\bin\.windows\.curl\curl\bin\curl.exe" (
+if NOT EXIST "%SCRIPT_ROOT_DIR%\bin\.windows\.curl\curl\curl-7.83.1-win64-mingw\bin\curl.exe" (
 
     if NOT EXIST "%SCRIPT_ROOT_DIR%\bin\.windows" (
         mkdir "%SCRIPT_ROOT_DIR%\bin\.windows"
@@ -37,11 +37,10 @@ if NOT EXIST "%SCRIPT_ROOT_DIR%\bin\.windows\.curl\curl\bin\curl.exe" (
         mkdir "%SCRIPT_ROOT_DIR%\bin\.windows\.curl\curl"
     )
 
-    C:\Windows\System32\ROBOCOPY.exe %SCRIPT_ROOT_DIR%\lib\binary_installers\windows\curl\curl %SCRIPT_ROOT_DIR%\bin\.windows\.curl\curl /copy:dat /e /np /njh /njh /LOG:%temp%\temp.txt
-
+    %SCRIPT_ROOT_DIR%\bin\7z.lnk x "%SCRIPT_ROOT_DIR%\lib\binary_installers\windows\curl\curl.zip" -o"%SCRIPT_ROOT_DIR%\bin\.windows\.curl\curl"
 )
 if NOT EXIST "%SCRIPT_ROOT_DIR%\bin\curl.LNK" (
-    cscript.exe %SCRIPT_ROOT_DIR%\lib\functions\windows\Create_Shortcut.vbs "%SCRIPT_ROOT_DIR%\bin\curl.LNK" "%SCRIPT_ROOT_DIR%\bin\.windows\.curl\curl\bin\curl.exe" "%SCRIPT_ROOT_DIR%\bin\.windows\.curl\curl\"
+    cscript.exe %SCRIPT_ROOT_DIR%\lib\functions\windows\Create_Shortcut.vbs "%SCRIPT_ROOT_DIR%\bin\curl.LNK" "%SCRIPT_ROOT_DIR%\bin\.windows\.curl\curl\curl-7.83.1-win64-mingw\bin\curl.exe" "%SCRIPT_ROOT_DIR%\bin\.windows\.curl\curl\curl-7.83.1-win64-mingw\bin\"
 )
 
 
