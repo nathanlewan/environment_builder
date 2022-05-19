@@ -191,7 +191,7 @@ deployStandardToolTar () {
 
      if [ ! -L "$ENVIRONMENT_ROOT_DIR"/bin/tar ]
     then
-        ln -s "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.tar/tar/bin/tar "$ENVIRONMENT_ROOT_DIR"/bin/tar
+        ln -s "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.tar/tar "$ENVIRONMENT_ROOT_DIR"/bin/tar
     fi
 
 }
