@@ -1,6 +1,9 @@
 @echo off
 setlocal EnableExtensions
 
+SET "PSHELLVERS=PowerShell-7.2.4-win-x64"
+SET "PSHELLVERSONLY=v7.2.4"
+
 for %%i in ("%~dp0.") do SET "SCRIPT_ROOT_DIR=%%~fi"
 
 rem move 7zip into position
@@ -45,7 +48,7 @@ if NOT EXIST "%SCRIPT_ROOT_DIR%\bin\curl.LNK" (
 
 
 rem get powershell and move into position
-if NOT EXIST "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\PowerShell-7.2.3-win-x64.zip" (
+if NOT EXIST "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\%PSHELLVERS%.zip" (
 
     if NOT EXIST "%SCRIPT_ROOT_DIR%\bin\.windows" (
         mkdir "%SCRIPT_ROOT_DIR%\bin\.windows"
@@ -54,17 +57,20 @@ if NOT EXIST "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\PowerShell-7.2.3-win-x6
         mkdir "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell"
     )
 
-    if NOT EXIST "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\powershell" (
-        mkdir "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\powershell"
+    if NOT EXIST "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\%PSHELLVERS%" (
+        mkdir "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\%PSHELLVERS%"
     )
 
-    %SCRIPT_ROOT_DIR%\bin\curl.lnk -L https://github.com/PowerShell/PowerShell/releases/download/v7.2.3/PowerShell-7.2.3-win-x64.zip --output %SCRIPT_ROOT_DIR%\bin\.windows\.powershell\PowerShell-7.2.3-win-x64.zip 
+    %SCRIPT_ROOT_DIR%\bin\curl.lnk -L https://github.com/PowerShell/PowerShell/releases/download/%PSHELLVERSONLY%/%PSHELLVERS%.zip --output %SCRIPT_ROOT_DIR%\bin\.windows\.powershell\%PSHELLVERS%.zip 
 )
-if NOT EXIST "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\powershell\pwsh.exe" (
-    %SCRIPT_ROOT_DIR%\bin\7z.lnk x "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\PowerShell-7.2.3-win-x64.zip" -o"%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\powershell"
+if NOT EXIST "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\%PSHELLVERS%\pwsh.exe" (
+    %SCRIPT_ROOT_DIR%\bin\7z.lnk x "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\%PSHELLVERS%.zip" -o"%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\%PSHELLVERS%"
 )
 if NOT EXIST "%SCRIPT_ROOT_DIR%\bin\pwsh.LNK" (
-    cscript.exe %SCRIPT_ROOT_DIR%\lib\functions\windows\Create_Shortcut.vbs "%SCRIPT_ROOT_DIR%\bin\pwsh.LNK" "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\powershell\pwsh.exe" "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\powershell\"
+    cscript.exe %SCRIPT_ROOT_DIR%\lib\functions\windows\Create_Shortcut.vbs "%SCRIPT_ROOT_DIR%\bin\pwsh.LNK" "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\%PSHELLVERS%\pwsh.exe" "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\%PSHELLVERS%\"
+) else (
+    del "%SCRIPT_ROOT_DIR%\bin\pwsh.LNK"
+    cscript.exe %SCRIPT_ROOT_DIR%\lib\functions\windows\Create_Shortcut.vbs "%SCRIPT_ROOT_DIR%\bin\pwsh.LNK" "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\%PSHELLVERS%\pwsh.exe" "%SCRIPT_ROOT_DIR%\bin\.windows\.powershell\%PSHELLVERS%\"
 )
 
 
