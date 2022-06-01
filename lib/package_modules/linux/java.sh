@@ -43,7 +43,7 @@ getPackageVersionFromWeb () {
             echo "$latestVersionPackageName"
         ;;
         "-packageSubFolderName")
-            # example return: "openjdk-*.*.*_linux-x64_bin.tar.gz"
+            # example return: "jdk-*.*.*", used as name for uncompressed folder
             echo "$latestVersionPackageSubFolderName"
         ;;
         "-cachePackageFileNameLocallyAndReturn")
@@ -78,6 +78,7 @@ isPackageAlreadyDeployed () {
 
     makePackageFolderStructure
     cachedVersionName=$(getCachedVersion | sed -e 's/.tar.gz//g')
+    subFolderName=$(getPackageVersionFromWeb -packageSubFolderName)
 
     if [ "$cachedVersionName" == "" ]
     then
@@ -85,7 +86,7 @@ isPackageAlreadyDeployed () {
         return
     fi
 
-    if [ -f "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.java/"$latestVersionPackageSubFolderName"/bin/java ]
+    if [ -f "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.java/"$subFolderName"/bin/java ]
     then
         echo "yes"
     else
@@ -126,6 +127,14 @@ ensureSymLinksExist () {
         ln -s "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.java/"$versionName"/bin/java "$ENVIRONMENT_ROOT_DIR"/bin/java
     else
         ln -s "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.java/"$versionName"/bin/java "$ENVIRONMENT_ROOT_DIR"/bin/java
+    fi
+
+    if [ -L "$ENVIRONMENT_ROOT_DIR"/bin/keytool ]
+    then
+        unlink "$ENVIRONMENT_ROOT_DIR"/bin/keytool
+        ln -s "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.java/"$versionName"/bin/keytool "$ENVIRONMENT_ROOT_DIR"/bin/keytool
+    else
+        ln -s "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.java/"$versionName"/bin/keytool "$ENVIRONMENT_ROOT_DIR"/bin/keytool
     fi
 
 }
