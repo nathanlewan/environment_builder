@@ -153,6 +153,22 @@ installPackage () {
     fi
 }
 
+setDefaultEnvironmentInfo () {
+    versionName=$(getPackageVersionFromWeb -packageSubFolderName)
+
+    testPresence=`cat "$ENVIRONMENT_ROOT_DIR"/conf/env_default | grep -c -m 1 JAVA_HOME`
+    if [ "$testPresence" == "0" ]
+    then
+        echo "JAVA_HOME=$ENVIRONMENT_ROOT_DIR/bin/.linux/.java/$versionName" >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
+    fi
+
+    testPresence=`cat "$ENVIRONMENT_ROOT_DIR"/conf/env_default | grep -c -m 1 JAVA_KEYSTORE`
+    if [ "$testPresence" == "0" ]
+    then
+        echo "JAVA_KEYSTORE=$ENVIRONMENT_ROOT_DIR/bin/.linux/.java/$versionName/lib/security/cacerts" >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
+    fi
+}
+
 
 
 
@@ -168,6 +184,7 @@ then
         ;;
         *)
 
+            setDefaultEnvironmentInfo
             makePackageFolderStructure
             isPackageDeployed=$(isPackageAlreadyDeployed)
             isPackageLatestVersionInstalled=$(isPackageAtLatestVersion)
