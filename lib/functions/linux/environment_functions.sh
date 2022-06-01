@@ -56,6 +56,7 @@ generateDefaultEnvAppFile () {
             echo "# Add required applications here, one per line"
             echo "# Available applications:" 
             echo "#     * nodejs"
+            echo "#     * java"
         } >> "$ENVIRONMENT_ROOT_DIR/conf/applications"
  
     fi
@@ -205,6 +206,7 @@ resetEnvSetup () {
     generateDefaultEnvFile -reset
     deployStandardToolCurl
     deployStandardToolUnzip
+    deployStandardToolTar
     
 }
 
