@@ -6,6 +6,14 @@ source "$ENVIRONMENT_ROOT_DIR"/lib/functions/linux/environment_functions.sh
 NUMBER_OF_FOLDERS_TO_TRAVERSE=$1
 
 
+case $1 in
+
+    "-resetEnvironment")
+        resetEnvSetup
+        exit
+        ;;
+
+esac
 
 
 
@@ -42,11 +50,7 @@ applyDefaultEnvironmentVariables
 
 while :; do
     case $1 in
-
-        "-resetEnvironment")
-            resetEnvSetup
-            exit
-            ;;
+    
         "-initializeServer")
             case $3 in
 
