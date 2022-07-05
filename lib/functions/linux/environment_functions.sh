@@ -197,6 +197,21 @@ deployStandardToolTar () {
 
 }
 
+deployStandardToolGit () {
+
+    if [ ! -d "$ENVIRONMENT_ROOT_DIR/bin/.linux/.git" ]
+    then
+        "$ENVIRONMENT_ROOT_DIR/bin/unzip" $ENVIRONMENT_ROOT_DIR/lib/binary_installers/linux/git/git.zip -d $ENVIRONMENT_ROOT_DIR/bin/.linux/.git
+        chmod 755 -R "$ENVIRONMENT_ROOT_DIR/bin/.linux/.git"
+    fi
+
+     if [ ! -L "$ENVIRONMENT_ROOT_DIR"/bin/git ]
+    then
+        ln -s "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.git/git "$ENVIRONMENT_ROOT_DIR"/bin/git
+    fi
+
+}
+
 resetEnvSetup () {
 
     generateDefaultBinFolderStructure -reset
@@ -207,7 +222,7 @@ resetEnvSetup () {
     deployStandardToolCurl
     deployStandardToolUnzip
     deployStandardToolTar
-    
+    deployStandardToolGit
 }
 
 shouldBeDeployed () {

@@ -32,6 +32,7 @@ generateDefaultBinFolderStructure
 deployStandardToolUnzip
 deployStandardToolCurl
 deployStandardToolTar
+deployStandardToolGit
 
 setupDefaultEnvironmentVariables
 applyDefaultEnvironmentVariables
