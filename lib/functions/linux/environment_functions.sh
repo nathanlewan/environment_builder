@@ -330,3 +330,25 @@ applyDefaultEnvironmentVariables () {
 buildEnvironmentTtyPs1 () {
     echo "PS1=[[environment_workspace]]\\$"
 }
+
+writeCustomEnvironmentVariable () {
+
+    # $1 variable name
+    # $2 variable value
+
+    # check if variable exists already
+    if [ ! -f "$ENVIRONMENT_ROOT_DIR/conf/env_custom" ]
+    then
+        generateDefaultEnvCustomFile
+    fi
+
+    variableExists=`cat "$ENVIRONMENT_ROOT_DIR/conf/env_custom" | grep -v "#" | grep -c -m 1 "$1="`
+
+    if [ "$variableExists" == "1" ]
+    then
+        sed -i "/$1=/d" "$ENVIRONMENT_ROOT_DIR/conf/env_custom"
+    fi
+
+    echo "$1=$2" >> "$ENVIRONMENT_ROOT_DIR/conf/env_custom"
+
+}
