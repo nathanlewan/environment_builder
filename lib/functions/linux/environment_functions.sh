@@ -313,13 +313,13 @@ applyDefaultEnvironmentVariables () {
     done
 
     envCustomContents=$(cat conf/env_custom )
-    defaultCustomVars=$(echo "$envCustomContents" | grep -v "#" | grep -v -e '^ ' | grep -v -e '^$')
+    defaultCustomVars=$(echo "$envCustomContents" | grep -v "#" | grep -v -e '^ ' | grep -v -e '^$' | sed -e 's/ /\n/g')
 
     for envVar in $defaultCustomVars
     do
     
         varName=$(echo "$envVar" | awk -F "=" '{print $1}')
-        varValue=$(echo "$envVar" | awk -F "=" '{print $2}')
+        varValue=$(echo "$envVar" | awk -F "=" '{print $2}' | sed -e 's/___/=/g' | sed -e 's/-__/ /g')
 
         export "$varName"="$varValue"
 
