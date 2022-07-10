@@ -77,13 +77,37 @@ generateDefaultEnvFile () {
         fi
     fi
 
-    # if 'applications' doesn't exist, create it
+    # if 'env_default' doesn't exist, create it
     if [ ! -f "$ENVIRONMENT_ROOT_DIR/conf/env_default" ]
     then
         touch "$ENVIRONMENT_ROOT_DIR/conf/env_default"
         echo "# This file is auto-generated" >> "$ENVIRONMENT_ROOT_DIR/conf/env_default"
         echo "# If you want to add/modify variables (or overwrite ones here), edit the 'env_custom' file"  >> "$ENVIRONMENT_ROOT_DIR/conf/env_default"
         echo " " >> "$ENVIRONMENT_ROOT_DIR/conf/env_default"
+    fi
+
+}
+
+generateDefaultEnvRcFile () {
+
+    # first argument passed to function
+    deleteFlag=$1
+
+    # if argument '-reset' is passed, delete applications file
+    if [ "$deleteFlag" == "-reset" ]
+    then
+        if [ -f "$ENVIRONMENT_ROOT_DIR/conf/.env_rc" ]
+        then
+            rm -f "$ENVIRONMENT_ROOT_DIR/conf/.env_rc"
+        fi
+    fi
+
+    # if '.env_rc' doesn't exist, create it
+    if [ ! -f "$ENVIRONMENT_ROOT_DIR/conf/.env_rc" ]
+    then
+        touch "$ENVIRONMENT_ROOT_DIR/conf/.env_rc"
+        echo "# This file is auto-generated" >> "$ENVIRONMENT_ROOT_DIR/conf/.env_rc"
+        echo "# If you want to add/modify variables 'env_custom' file"  >> "$ENVIRONMENT_ROOT_DIR/conf/.env_rc"
     fi
 
 }
@@ -204,6 +228,7 @@ resetEnvSetup () {
     generateDefaultEnvCustomFile -reset
     generateDefaultEnvAppFile -reset
     generateDefaultEnvFile -reset
+    generateDefaultEnvRcFile -reset
     deployStandardToolCurl
     deployStandardToolUnzip
     deployStandardToolTar
@@ -285,50 +310,10 @@ setupDefaultEnvironmentVariables () {
     testPsEntryCheck=`cat "$ENVIRONMENT_ROOT_DIR"/conf/env_default | grep -c -m 1 "PS1="`
     if [ "$testPsEntryCheck" == 0 ]
     then
-        buildEnvironmentTtyPs1 >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
+        buildEnvironmentTtyPs1
     fi
     
 
-}
-
-applyDefaultEnvironmentVariables () {
-
-    envDefaultContents=$(cat conf/env_default)
-    defaultEnvironmentVars=$(echo "$envDefaultContents" | grep -v "#" | grep -v -e '^ ' | grep -v -e '^$')
-
-    for envVar in $defaultEnvironmentVars
-    do
-
-        varName=$(echo "$envVar" | awk -F "=" '{print $1}')
-        varValue=$(echo "$envVar" | awk -F "=" '{print $2}')
-
-        if [ "$varName" == "PS1" ]
-        then
-            export "$varName"="$varValue "
-        else
-            export "$varName"="$varValue"
-        fi
-        
-
-    done
-
-    envCustomContents=$(cat conf/env_custom )
-    defaultCustomVars=$(echo "$envCustomContents" | grep -v "#" | grep -v -e '^ ' | grep -v -e '^$' | sed -e 's/ /\n/g')
-
-    for envVar in $defaultCustomVars
-    do
-    
-        varName=$(echo "$envVar" | awk -F "=" '{print $1}')
-        varValue=$(echo "$envVar" | awk -F "=" '{print $2}' | sed -e 's/___/=/g' | sed -e 's/-__/ /g')
-
-        export "$varName"="$varValue"
-
-    done
-
-}
-
-buildEnvironmentTtyPs1 () {
-    echo "PS1=[[environment_workspace]]\\$"
 }
 
 writeCustomEnvironmentVariable () {
@@ -351,4 +336,53 @@ writeCustomEnvironmentVariable () {
 
     echo "$1=$2" >> "$ENVIRONMENT_ROOT_DIR/conf/env_custom"
 
+}
+
+buildEnvRcFileFromConfFiles () {
+
+    cat "$ENVIRONMENT_ROOT_DIR"/conf/env_default | grep -v ^"#" >> conf/.env_rc
+    cat "$ENVIRONMENT_ROOT_DIR"/conf/env_custom | grep -v ^"#" >> conf/.env_rc
+    
+}
+
+buildTempRcRunFile () {
+
+    # first argument passed to function
+    exeCmd=$1
+
+    if [ -f /tmp/.env_temp ]
+    then
+        rm -rf /tmp/.env_temp
+    fi
+
+    echo ". $ENVIRONMENT_ROOT_DIR/conf/.env_rc" >> /tmp/.env_temp
+
+    if [ "$1" != "" ]
+    then
+        echo "$exeCmd" >> /tmp/.env_temp
+    fi
+    echo "rm -rf /tmp/.env_temp" >> /tmp/.env_temp
+    chmod 755 /tmp/.env_temp
+
+}
+
+buildEnvironmentTtyPs1 () {
+
+    # first argument: name of env
+    ENVNAME=$1
+
+    if [ "$ENVNAME" == "" ]
+    then
+        ENVNAME="built_environment"
+    fi
+
+    GREEN="\e[32;1m"
+    RED="\e[31;1m"
+    BLUE="\e[34;1m"
+    ENDCOLOR="\e[0m"
+    SUCCESS="[${GREEN}*${ENDCOLOR}]"
+    FAIL="[${RED}*${ENDCOLOR}]"
+
+    line='PS1='\"${BLUE}[${ENDCOLOR}${GREEN}${ENVNAME}${ENDCOLOR}\ \\W${BLUE}]${ENDCOLOR}${GREEN}\$${ENDCOLOR}\ \"''
+    echo "$line" >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
 }

@@ -27,6 +27,8 @@ generateDefaultEnvCustomFile
 generateDefaultEnvAppFile
 generateDefaultEnvFile -reset
 generateDefaultEnvFile
+generateDefaultEnvRcFile -reset
+generateDefaultEnvRcFile
 
 generateDefaultBinFolderStructure
 deployStandardToolUnzip
@@ -34,7 +36,7 @@ deployStandardToolCurl
 deployStandardToolTar
 
 setupDefaultEnvironmentVariables
-applyDefaultEnvironmentVariables
+buildEnvRcFileFromConfFiles
 
 packageModules=$(ls "$ENVIRONMENT_ROOT_DIR"/lib/package_modules/linux/)
 
@@ -45,7 +47,7 @@ do
 done
 
 setupDefaultEnvironmentVariables
-applyDefaultEnvironmentVariables
+buildEnvRcFileFromConfFiles
 
 
 while :; do
@@ -54,17 +56,17 @@ while :; do
         "-initializeServer")
             case $3 in
 
-                    1) cd ../ ;;
-                    2) cd ../../ ;;
-                    3) cd ../../../ ;;
-                    4) cd ../../../../ ;;
-                    5) cd ../../../../../ ;;
-                    *)
-                        INCLUDE_WARNING_ABOUT_SPACES="yes"
-                    ;;
+                1) cd ../ ;;
+                2) cd ../../ ;;
+                3) cd ../../../ ;;
+                4) cd ../../../../ ;;
+                5) cd ../../../../../ ;;
 
             esac
-            eval " $2"
+
+            buildTempRcRunFile "$2"
+
+            exec /tmp/.env_temp
             exit
             ;;
         "-help")
@@ -79,7 +81,6 @@ while :; do
             exit
             ;;
         *)
-            INCLUDE_WARNING_ABOUT_SPACES="no"
             case $NUMBER_OF_FOLDERS_TO_TRAVERSE in
 
                 1) cd ../ ;;
@@ -87,26 +88,17 @@ while :; do
                 3) cd ../../../ ;;
                 4) cd ../../../../ ;;
                 5) cd ../../../../../ ;;
-                *)
-                    INCLUDE_WARNING_ABOUT_SPACES="yes"
-                ;;
 
             esac
-            #clear
-            echo " "
-            echo "**********************************************************"
-            echo "** New terminal session with environment set up         **"
-            echo "** When done be sure to 'exit' this terminal            **"
-            if [ $INCLUDE_WARNING_ABOUT_SPACES == "yes" ]
+            
+            if [ -f /tmp/.env_temp ]
             then
-            echo "**                                                      **"
-            echo "** If you want to change which folder you end up in,    **"
-            echo "** add the number of folders to backtrack as the first  **"
-            echo "** argument to the environment_linux.sh script          **"
+                rm -rf /tmp/.env_temp
             fi
-            echo "**********************************************************"
-            echo " "
-            exec "/bin/bash"
+
+            buildTempRcRunFile
+
+            bash --rcfile /tmp/.env_temp
             exit
             ;;
 
