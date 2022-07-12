@@ -334,7 +334,7 @@ writeCustomEnvironmentVariable () {
         sed -i "/$1=/d" "$ENVIRONMENT_ROOT_DIR/conf/env_custom"
     fi
 
-    echo "$1=$2" >> "$ENVIRONMENT_ROOT_DIR/conf/env_custom"
+    echo "export $1=$2" >> "$ENVIRONMENT_ROOT_DIR/conf/env_custom"
 
 }
 
@@ -370,10 +370,12 @@ buildEnvironmentTtyPs1 () {
 
     # first argument: name of env
     ENVNAME=$1
+    ENVPATH="env_custom"
 
     if [ "$ENVNAME" == "" ]
     then
         ENVNAME="built_environment"
+        ENVPATH="env_default"
     fi
 
     GREEN="\e[32;1m"
@@ -384,5 +386,11 @@ buildEnvironmentTtyPs1 () {
     FAIL="[${RED}*${ENDCOLOR}]"
 
     line='PS1='\"${BLUE}[${ENDCOLOR}${GREEN}${ENVNAME}${ENDCOLOR}\ \\W${BLUE}]${ENDCOLOR}${GREEN}\$${ENDCOLOR}\ \"''
-    echo "$line" >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
+
+    checkExistence=`cat "$ENVIRONMENT_ROOT_DIR"/conf/$ENVPATH | grep -c -m 1 "$ENVNAME"`
+
+    if [ "$checkExistence" != "1" ]
+    then
+        echo "$line" >> "$ENVIRONMENT_ROOT_DIR"/conf/$ENVPATH
+    fi
 }
