@@ -57,6 +57,7 @@ generateDefaultEnvAppFile () {
             echo "# Available applications:" 
             echo "#     * nodejs"
             echo "#     * java"
+            echo "#     * hazelcast"
         } >> "$ENVIRONMENT_ROOT_DIR/conf/applications"
  
     fi
