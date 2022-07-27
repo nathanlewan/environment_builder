@@ -58,6 +58,7 @@ generateDefaultEnvAppFile () {
             echo "#     * nodejs"
             echo "#     * java"
             echo "#     * hazelcast"
+            echo "#     * tomcat"
         } >> "$ENVIRONMENT_ROOT_DIR/conf/applications"
  
     fi
@@ -283,9 +284,11 @@ setupDefaultEnvironmentVariables () {
     for element in "${array[@]}"
     do
 
-        if [[ "$element" == *"PATH"* ]]
+        
+        testIfPath=`echo $element | grep -c -m 1 ^PATH `
+        if [[ "$testIfPath" == "1" ]]
         then
-
+            echo "*** $element"
             newPathEntry=${element//PATH=/}
 
             if [[ "$pathVariable" != *"$newPathEntry"* ]]
@@ -293,6 +296,7 @@ setupDefaultEnvironmentVariables () {
                 pathVariable="$pathVariable:$newPathEntry"
             fi
         else
+
             testPresence=`cat "$ENVIRONMENT_ROOT_DIR"/conf/env_default | grep -c -m 1 "$element"`
             if [ "$testPresence" == "0" ]
             then
@@ -302,7 +306,7 @@ setupDefaultEnvironmentVariables () {
 
     done
 
-    testPresence=`cat "$ENVIRONMENT_ROOT_DIR"/conf/env_default | grep -c -m 1 "PATH="`
+    testPresence=`cat "$ENVIRONMENT_ROOT_DIR"/conf/env_default | grep -c -m 1 "^PATH="`
     if [ "$testPresence" == "0" ]
     then
         echo "PATH=$pathVariable" >> "$ENVIRONMENT_ROOT_DIR"/conf/env_default
