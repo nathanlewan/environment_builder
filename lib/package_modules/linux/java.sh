@@ -180,11 +180,10 @@ then
     case $environmentVariableSetup in
 
         "-environmentSetup")
-            echo "PATH=$ENVIRONMENT_ROOT_DIR/bin"
+            setDefaultEnvironmentInfo
         ;;
         *)
 
-            setDefaultEnvironmentInfo
             makePackageFolderStructure
             isPackageDeployed=$(isPackageAlreadyDeployed)
             isPackageLatestVersionInstalled=$(isPackageAtLatestVersion)
