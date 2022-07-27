@@ -150,8 +150,12 @@ then
     case $environmentVariableSetup in
 
         "-environmentSetup")
-            echo "HAZELCAST_HOME=$ENVIRONMENT_ROOT_DIR/bin"
-            echo "CLASSPATH=$CLASSPATH:$ENVIRONMENT_ROOT_DIR/bin/$HAZELCAST_HOME/hazelcast.jar"
+            if [ "$CLASSPATH" == "" ]
+            then
+                echo "HAZELCAST_HOME=$ENVIRONMENT_ROOT_DIR/bin :: CLASSPATH=$ENVIRONMENT_ROOT_DIR/bin/hazelcast.jar"
+            else
+                echo "HAZELCAST_HOME=$ENVIRONMENT_ROOT_DIR/bin :: CLASSPATH=$CLASSPATH:$ENVIRONMENT_ROOT_DIR/bin/hazelcast.jar"
+            fi
         ;;
         *)
 
