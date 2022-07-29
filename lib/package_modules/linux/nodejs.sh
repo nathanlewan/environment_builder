@@ -140,7 +140,8 @@ ensureSymLinksExist () {
 }
 
 installPackage () {
-    echo "** nodejs needs installing **"
+    consoleLog "nodejs needs installing" "SUCCESS" 0
+
     latestVersionUrlFromWeb=$(getPackageVersionFromWeb -cachePackageFileNameLocallyAndReturn)
     latestDownloadUrlFromWeb=$(getPackageVersionFromWeb -downloadUrl)
     "$ENVIRONMENT_ROOT_DIR"/bin/curl "$latestDownloadUrlFromWeb" > "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node/"$latestVersionUrlFromWeb"
@@ -149,7 +150,7 @@ installPackage () {
     then
         tar xv -C "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node -f "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.node/"$latestVersionUrlFromWeb"
     else
-        echo "error: nodejs tarball not downloaded"
+        consoleLog "error: nodejs tarball not downloaded" "FAIL" 1
     fi
 }
 
@@ -188,10 +189,10 @@ then
                         installPackage
                     ;;
                     "n"|"N")
-                        echo "** skipping node upgrade **"
+                        consoleLog "skipping node upgrade" "SUCCESS" 1
                     ;;
                     *)
-                        echo "** skipping node upgrade **"
+                        consoleLog "skipping node upgrade" "SUCCESS" 1
                     ;;
 
                 esac

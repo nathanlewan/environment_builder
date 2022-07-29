@@ -125,7 +125,8 @@ ensureSymLinksExist () {
 }
 
 installPackage () {
-    echo "** hazelcast needs installing **"
+    consoleLog "hazelcast needs installing" "SUCCESS" 0
+
     latestVersionUrlFromWeb=$(getPackageVersionFromWeb -cachePackageFileNameLocallyAndReturn)
     latestDownloadUrlFromWeb=$(getPackageVersionFromWeb -downloadUrl)
     echo "$ENVIRONMENT_ROOT_DIR/bin/curl $latestDownloadUrlFromWeb"
@@ -135,7 +136,7 @@ installPackage () {
     then
         tar xv -C "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.hazelcast -f "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.hazelcast/"$latestVersionUrlFromWeb"
     else
-        echo "error: hazelcast tarball not downloaded"
+        consoleLog "error: hazelcast tarball not downloaded" "FAIL" 1
     fi
 }
 
@@ -179,10 +180,10 @@ then
                         installPackage
                     ;;
                     "n"|"N")
-                        echo "** skipping hazelcast upgrade **"
+                        consoleLog "skipping hazelcast upgrade" "SUCCESS" 0
                     ;;
                     *)
-                        echo "** skipping hazelcast upgrade **"
+                        consoleLog "skipping hazelcast upgrade" "SUCCESS" 0
                     ;;
 
                 esac

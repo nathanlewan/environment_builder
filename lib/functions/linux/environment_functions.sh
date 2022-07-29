@@ -7,7 +7,58 @@ cd ..
 ENVIRONMENT_ROOT_DIR=$(pwd)
 
 
+consoleLog () {
 
+    # $1 message
+    # $2 SUCCESS, FAIL
+    # $3 indent
+
+    GREEN="\e[32m"
+    RED="\e[31m"
+    BLUE="\e[34m"
+    GRAY="\e[90m"
+    ENDCOLOR="\e[0m"
+    SUCCESS="[${GREEN}*${ENDCOLOR}]"
+    FAIL="[${RED}*${ENDCOLOR}]"
+
+    MESSAGE=$1
+    STATUS=$SUCCESS
+    INDENT=""
+
+    case $2 in
+
+        "SUCCESS")
+            STATUS=$SUCCESS
+            ;;
+
+        "FAIL")
+            STATUS=$FAIL
+            ;;
+        *)
+            STATUS=$SUCCESS
+            ;;
+    esac
+
+    case $3 in
+
+        0)
+            echo -e "$STATUS $MESSAGE"
+            ;;
+        1)
+            echo -e "  $STATUS $MESSAGE"
+            ;;
+        2)
+            echo -e "    $STATUS $MESSAGE"
+            ;;
+        3)
+            echo -e "      $STATUS $MESSAGE"
+            ;;
+        *)
+            echo -e "$STATUS $MESSAGE"
+            ;;
+    esac
+
+}
 
 generateDefaultEnvCustomFile () {
 
@@ -243,7 +294,7 @@ shouldBeDeployed () {
 
     if [ "$selectedApp" == "" ]
     then
-        echo "please enter an app name"
+        consoleLog "please enter an app name" "FAIL" 0
         exit
     fi
 
@@ -288,7 +339,6 @@ setupDefaultEnvironmentVariables () {
         testIfPath=`echo $element | grep -c -m 1 ^PATH `
         if [[ "$testIfPath" == "1" ]]
         then
-            echo "*** $element"
             newPathEntry=${element//PATH=/}
 
             if [[ "$pathVariable" != *"$newPathEntry"* ]]

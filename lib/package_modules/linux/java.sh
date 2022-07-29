@@ -140,7 +140,8 @@ ensureSymLinksExist () {
 }
 
 installPackage () {
-    echo "** java openjdk needs installing **"
+    consoleLog "java openjdk needs installing" "SUCCESS" 0
+
     latestVersionUrlFromWeb=$(getPackageVersionFromWeb -cachePackageFileNameLocallyAndReturn)
     latestDownloadUrlFromWeb=$(getPackageVersionFromWeb -downloadUrl)
     "$ENVIRONMENT_ROOT_DIR"/bin/curl "$latestDownloadUrlFromWeb" > "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.java/"$latestVersionUrlFromWeb"
@@ -149,7 +150,7 @@ installPackage () {
     then
         tar xv -C "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.java -f "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.java/"$latestVersionUrlFromWeb"
     else
-        echo "error: openjdk tarball not downloaded"
+        consoleLog "error: openjdk tarball not downloaded" "FAIL" 1
     fi
 }
 
@@ -204,10 +205,10 @@ then
                         installPackage
                     ;;
                     "n"|"N")
-                        echo "** skipping node upgrade **"
+                        consoleLog "skipping node upgrade" "SUCCESS" 1
                     ;;
                     *)
-                        echo "** skipping node upgrade **"
+                        consoleLog "skipping node upgrade" "SUCCESS" 1
                     ;;
 
                 esac

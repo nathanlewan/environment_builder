@@ -136,8 +136,7 @@ ensureSymLinksExist () {
 }
 
 installPackage () {
-
-    echo -e "${SUCCESS} ** tomcat needs installing **"
+    consoleLog "tomcat needs installing" "SUCCESS" 0
 
     latestVersionUrlFromWeb=$(getPackageVersionFromWeb -cachePackageFileNameLocallyAndReturn)
     latestDownloadUrlFromWeb=$(getPackageVersionFromWeb -downloadUrl)
@@ -148,7 +147,7 @@ installPackage () {
     then
         tar xv -C "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.tomcat -f "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.tomcat/"$latestVersionUrlFromWeb"
     else
-        echo -e "${FAIL} ** error: tomcat tarball not downloaded"
+        consoleLog "tomcat tarball not downloaded" "FAIL" 0
     fi
 }
 
@@ -178,7 +177,7 @@ buildTomcatUsersXml () {
     if [ -f "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.tomcat/"$latestName"/conf/tomcat-users.xml ]
     then 
         rm -rf "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.tomcat/"$latestName"/conf/tomcat-users.xml
-        echo "updating tomcat-users.xml"
+        consoleLog "updating tomcat-users.xml" "SUCCESS" 0
     fi
 
     mv /tmp/tomcat-users.xml "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.tomcat/"$latestName"/conf/tomcat-users.xml
@@ -207,7 +206,7 @@ buildDefaultContextXmls () {
     if [ -f "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.tomcat/"$latestName"/webapps/manager/META-INF/context.xml ]
     then 
         rm -rf "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.tomcat/"$latestName"/webapps/manager/META-INF/context.xml
-        echo "updating manager context.xml"
+        consoleLog "updating manager context.xml" "SUCCESS" 0
     fi
 
     cp /tmp/manager-context.xml "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.tomcat/"$latestName"/webapps/manager/META-INF/context.xml
@@ -216,7 +215,7 @@ buildDefaultContextXmls () {
     if [ -f "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.tomcat/"$latestName"/webapps/host-manager/META-INF/context.xml ]
     then 
         rm -rf "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.tomcat/"$latestName"/webapps/host-manager/META-INF/context.xml
-        echo "updating host-manager context.xml"
+        consoleLog "updating host-manager context.xml" "SUCCESS" 0
     fi
 
     mv /tmp/manager-context.xml "$ENVIRONMENT_ROOT_DIR"/bin/.linux/.tomcat/"$latestName"/webapps/host-manager/META-INF/context.xml
@@ -259,10 +258,10 @@ then
                         installPackage
                     ;;
                     "n"|"N")
-                        echo "** skipping tomcat upgrade **"
+                        consoleLog "skipping tomcat upgrade" "SUCCESS" 0
                     ;;
                     *)
-                        echo "** skipping tomcat upgrade **"
+                        consoleLog "skipping tomcat upgrade" "SUCCESS" 0
                     ;;
 
                 esac
