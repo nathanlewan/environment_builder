@@ -1,0 +1,9 @@
+\conf/env_custom
+\conf/applications
+\conf/env_default
+\conf/.env_rc
+\bin
+\node_modules
+.vscode
+package-lock.json
+package.json
